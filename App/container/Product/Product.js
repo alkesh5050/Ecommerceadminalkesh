@@ -4,7 +4,7 @@ import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-export default function SubCategory() {
+export default function Product() {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [open, setOpen] = useState(false);
@@ -14,7 +14,13 @@ export default function SubCategory() {
     { label: 'shirt for women', value: 'shirt for women' },
     { label: 'women shoes', value: 'women shoes' },
   ]);
-
+  const [open1, setOpen1] = useState(false);
+  const [value1, setValue1] = useState(null);
+  const [items1, setItems1] = useState([
+    { label: 'shirts for men', value: 'shirts for men' },
+    { label: 'shirt for women', value: 'shirt for women' },
+    { label: 'women shoes', value: 'women shoes' },
+  ]);
   return (
     <View style={styles.container}>
 
@@ -22,7 +28,7 @@ export default function SubCategory() {
         style={styles.button}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.buttonText}>Add SubCategory</Text>
+        <Text style={styles.buttonText}>Add Product</Text>
       </TouchableOpacity>
 
 
@@ -35,7 +41,7 @@ export default function SubCategory() {
         <View style={styles.modalOverlay}>
 
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>category</Text>
+            <Text style={styles.modalText}>Product</Text>
             <View style={styles.DropDown}>
               <DropDownPicker
                 open={open}
@@ -47,9 +53,32 @@ export default function SubCategory() {
                 placeholder={'Category'}
               />
             </View>
+            <View style={styles.DropDown}>
+              <DropDownPicker
+                open={open1}
+                value={value1}
+                items={items1}
+                setOpen={setOpen1}
+                setValue={setValue1}
+                setItems={setItems1}
+                placeholder={'Sub Category'}
+              />
+            </View>
             <TextInput
               style={styles.input}
-              placeholder=' Add SubCategory Name'
+              placeholder='Name'
+              placeholderTextColor='#9B9B9B'
+
+            />
+            <TextInput
+              style={styles.input}
+              placeholder='Price'
+              placeholderTextColor='#9B9B9B'
+
+            />
+            <TextInput
+              style={styles.input}
+              placeholder='Discretion'
               placeholderTextColor='#9B9B9B'
 
             />
@@ -64,8 +93,9 @@ export default function SubCategory() {
         </View>
       </Modal>
     </View>
-  );
+  )
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -87,7 +117,8 @@ const styles = StyleSheet.create({
     padding: 13,
     backgroundColor: '#007BFF',
     borderRadius: 9,
-    paddingHorizontal: 100,
+
+    paddingHorizontal: 100
   },
   button: {
     padding: 10,
@@ -101,7 +132,8 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    paddingTop: 100,
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
@@ -129,7 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     padding: 10,
-    height: 50,
+    height: '11%',
     width: '95%',
   },
 });
