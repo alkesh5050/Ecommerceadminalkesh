@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function Product() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,6 +33,27 @@ export default function Product() {
         <Text style={styles.buttonText}>Add Product</Text>
       </TouchableOpacity>
 
+      <View style={styles.manProduct}>
+        <View style={styles.Viewman}>
+          <Text style={{ color: 'black' }}>men</Text>
+          <View style={styles.iconview}>
+          <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
+          <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
+
+          </View>
+
+        </View>
+        <View style={styles.Viewman}>
+          <Text style={{ color: 'black', }}>Women</Text>
+          <View style={styles.iconview}>
+          <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
+          <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
+
+          </View>
+
+        </View>
+
+      </View>
 
       <Modal
         // animationType="slide"
@@ -130,6 +153,32 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+  manProduct: {
+    width: '90%',
+    // height: '30%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    elevation: 6,
+    marginTop: 100
+  },
+  Viewman: {
+    width: '90%',
+    // height: '30%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    elevation: 6,
+    margin: '5%',
+    // justifyContent: 'center',
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // columnGap:90
+  },
+  iconview: {
+    flexDirection: 'row',
+    width: '30%',
+    justifyContent: 'space-between'
+  },
   modalOverlay: {
     flex: 1,
     // justifyContent: 'center',
@@ -157,6 +206,7 @@ const styles = StyleSheet.create({
 
   },
   input: {
+    color: 'black',
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 10,

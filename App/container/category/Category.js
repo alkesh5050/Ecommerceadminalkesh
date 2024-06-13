@@ -22,8 +22,8 @@ export default function Category() {
         <View style={styles.Viewman}>
           <Text style={{ color: 'black' }}>men</Text>
           <View style={styles.iconview}>
-            <TouchableOpacity><FontAwesome name="edit" size={25} color="green" /></TouchableOpacity>
-            <TouchableOpacity><MaterialCommunityIcons name="delete" size={25} color="red" /></TouchableOpacity>
+            <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
+            <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
 
           </View>
 
@@ -31,8 +31,8 @@ export default function Category() {
         <View style={styles.Viewman}>
           <Text style={{ color: 'black', }}>Women</Text>
           <View style={styles.iconview}>
-            <TouchableOpacity><FontAwesome name="edit" size={25} color="green" /></TouchableOpacity>
-            <TouchableOpacity><MaterialCommunityIcons name="delete" size={25} color="red" /></TouchableOpacity>
+            <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
+            <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
 
           </View>
 
@@ -50,13 +50,17 @@ export default function Category() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>Add category</Text>
-            <TextInput
-              style={styles.input}
+            <View style={{ width: '95%', }}>
+              <TextInput
+                style={styles.input}
 
-              placeholder='Category Name'
-              placeholderTextColor='#9B9B9B'
+                placeholder='Category Name'
+                placeholderTextColor='#9B9B9B'
 
-            />
+
+              />
+            </View>
+
             <TouchableOpacity
               style={styles.button1}
               onPress={() => setModalVisible(false)}
@@ -78,11 +82,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-
+    color: 'black',
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    paddingHorizontal: 100,
+    // paddingHorizontal: 100,
     borderRadius: 5,
     marginBottom: 10
   },
