@@ -31,32 +31,32 @@ export default function Category() {
 
     if (update) {
 
-      const udata=JSON.parse(catData).map((v)=>{
-        if(v.id===update){
-        return ({id:update,cat_name:name})
-        }else{
+      const udata = JSON.parse(catData).map((v) => {
+        if (v.id === update) {
+          return ({ id: update, cat_name: name });
+        } else {
           return v;
         }
       })
 
-      await AsyncStorage.setItem("category", JSON.stringify(udata))
-      setdata(udata)
-      console.log("async", udata);
-    }else{
-       if (catData) {
-      console.log("fffffff");
-      const asyncData = JSON.parse(catData);
-
-      asyncData.push({ id: Math.floor(Math.random() * 10000), cat_name: name })
-
-      await AsyncStorage.setItem("category", JSON.stringify(asyncData))
-      setdata(asyncData)
+      await AsyncStorage.setItem("category", JSON.stringify(udata));
+      setdata(udata);
+      // console.log("async", udata);
     } else {
-      let data = [{ id: Math.floor(Math.random() * 10000), cat_name: name }];
+      if (catData) {
+        // console.log("fffffff");
+        const asyncData = JSON.parse(catData);
 
-      await AsyncStorage.setItem("category", JSON.stringify(data))
-      setdata(asyncData)
-    }
+        asyncData.push({ id: Math.floor(Math.random() * 10000), cat_name: name })
+
+        await AsyncStorage.setItem("category", JSON.stringify(asyncData))
+        setdata(asyncData)
+      } else {
+        let data = [{ id: Math.floor(Math.random() * 10000), cat_name: name }];
+
+        await AsyncStorage.setItem("category", JSON.stringify(data))
+        setdata(asyncData)
+      }
     }
 
     setName('')
@@ -84,7 +84,7 @@ export default function Category() {
     // console.log("sdddd", fdata.cat_name);
 
     setName(fdata.cat_name);
-    setUpdate(true)
+    setUpdate(id)
   }
 
   return (
