@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { horizontalScale, moderateScale, verticalScale } from '../../../assets/Fonts/Matrix/Matrix';
 
 export default function Product() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,98 +25,101 @@ export default function Product() {
     { label: 'women shoes', value: 'women shoes' },
   ]);
   return (
-    <View style={styles.container}>
+    <ScrollView>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.buttonText}>Add Product</Text>
-      </TouchableOpacity>
+      <View style={styles.container}>
 
-      <View style={styles.manProduct}>
-        <View style={styles.Viewman}>
-          <Text style={{ color: 'black' }}>men</Text>
-          <View style={styles.iconview}>
-          <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
-          <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.buttonText}>Add Product</Text>
+        </TouchableOpacity>
+
+        <View style={styles.manProduct}>
+          <View style={styles.Viewman}>
+            <Text style={{ color: 'black' }}>men</Text>
+            <View style={styles.iconview}>
+              <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
+              <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
+
+            </View>
+
+          </View>
+          <View style={styles.Viewman}>
+            <Text style={{ color: 'black', }}>Women</Text>
+            <View style={styles.iconview}>
+              <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
+              <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
+
+            </View>
 
           </View>
 
         </View>
-        <View style={styles.Viewman}>
-          <Text style={{ color: 'black', }}>Women</Text>
-          <View style={styles.iconview}>
-          <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
-          <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
 
+        <Modal
+          // animationType="slide"
+          // transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>Product</Text>
+              <View style={styles.DropDown}>
+                <DropDownPicker
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  placeholder={'Category'}
+                />
+              </View>
+              <View style={styles.DropDown1}>
+                <DropDownPicker
+                  open={open1}
+                  value={value1}
+                  items={items1}
+                  setOpen={setOpen1}
+                  setValue={setValue1}
+                  setItems={setItems1}
+                  placeholder={'Sub Category'}
+                />
+              </View>
+              <TextInput
+                style={styles.input}
+                placeholder='Name'
+                placeholderTextColor='#9B9B9B'
+
+              />
+              <TextInput
+                style={styles.input}
+                placeholder='Price'
+                placeholderTextColor='#9B9B9B'
+
+              />
+              <TextInput
+                style={styles.input}
+                placeholder='Discretion'
+                placeholderTextColor='#9B9B9B'
+
+              />
+
+              <TouchableOpacity
+                style={styles.button1}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-
-        </View>
-
+        </Modal>
       </View>
-
-      <Modal
-        // animationType="slide"
-        // transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Product</Text>
-            <View style={styles.DropDown}>
-              <DropDownPicker
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-                placeholder={'Category'}
-              />
-            </View>
-            <View style={styles.DropDown}>
-              <DropDownPicker
-                open={open1}
-                value={value1}
-                items={items1}
-                setOpen={setOpen1}
-                setValue={setValue1}
-                setItems={setItems1}
-                placeholder={'Sub Category'}
-              />
-            </View>
-            <TextInput
-              style={styles.input}
-              placeholder='Name'
-              placeholderTextColor='#9B9B9B'
-
-            />
-            <TextInput
-              style={styles.input}
-              placeholder='Price'
-              placeholderTextColor='#9B9B9B'
-
-            />
-            <TextInput
-              style={styles.input}
-              placeholder='Discretion'
-              placeholderTextColor='#9B9B9B'
-
-            />
-
-            <TouchableOpacity
-              style={styles.button1}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.buttonText}>Submit</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -124,49 +128,48 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: 'center',
-    paddingTop: 80,
+    paddingTop: horizontalScale(80),
     alignItems: 'center',
   },
   input: {
 
-    height: 40,
+    height: verticalScale(40),
     borderColor: 'gray',
     borderWidth: 1,
-    paddingHorizontal: 100,
-    borderRadius: 5,
-    marginBottom: 10
+    paddingHorizontal: horizontalScale(100),
+    borderRadius: moderateScale(5),
+    marginBottom: moderateScale(10)
   },
   button1: {
     padding: 13,
     backgroundColor: '#007BFF',
-    borderRadius: 9,
-
+    borderRadius: moderateScale(9),
     paddingHorizontal: 100
   },
   button: {
     padding: 10,
     backgroundColor: '#007BFF',
-    borderRadius: 5,
+    borderRadius: moderateScale(5),
 
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: moderateScale(16),
   },
   manProduct: {
     width: '90%',
     // height: '30%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    elevation: 6,
+    borderRadius: moderateScale(10),
+    elevation: moderateScale(6),
     marginTop: 100
   },
   Viewman: {
     width: '90%',
     // height: '30%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    elevation: 6,
+    borderRadius: moderateScale(10),
+    elevation: moderateScale(6),
     margin: '5%',
     // justifyContent: 'center',
     padding: 10,
@@ -203,7 +206,12 @@ const styles = StyleSheet.create({
   DropDown: {
     paddingBottom: 30,
     paddingHorizontal: 5,
-
+    zIndex: 1000
+  },
+  DropDown1: {
+    paddingBottom: 30,
+    paddingHorizontal: 5,
+   zIndex: 999
   },
   input: {
     color: 'black',

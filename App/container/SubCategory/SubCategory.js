@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { horizontalScale, moderateScale, verticalScale } from '../../../assets/Fonts/Matrix/Matrix';
 
 export default function SubCategory() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,6 +19,7 @@ export default function SubCategory() {
   ]);
 
   return (
+    <ScrollView>
     <View style={styles.container}>
 
       <TouchableOpacity
@@ -61,6 +63,7 @@ export default function SubCategory() {
             <Text style={styles.modalText}>category</Text>
             <View style={styles.DropDown}>
               <DropDownPicker
+             
                 open={open}
                 value={value}
                 items={items}
@@ -87,6 +90,7 @@ export default function SubCategory() {
         </View>
       </Modal>
     </View>
+    </ScrollView>
   );
 }
 
@@ -94,51 +98,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: 'center',
-    paddingTop: 80,
+    paddingTop: horizontalScale(80),
     alignItems: 'center',
   },
   input: {
 
-    height: 40,
+    height: verticalScale(40),
     borderColor: 'gray',
     borderWidth: 1,
-    paddingHorizontal: 100,
-    borderRadius: 5,
-    marginBottom: 10
+    paddingHorizontal:  horizontalScale(100),
+    borderRadius: moderateScale(5),
+    marginBottom: horizontalScale(10)
   },
   button1: {
-    padding: 13,
+    padding: horizontalScale(13),
     backgroundColor: '#007BFF',
-    borderRadius: 9,
-    paddingHorizontal: 100,
+    borderRadius: moderateScale(9),
+    paddingHorizontal: horizontalScale(100),
   },
   button: {
-    padding: 10,
+    padding: horizontalScale(10),
     backgroundColor: '#007BFF',
-    borderRadius: 5,
+    borderRadius: moderateScale(5),
 
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: moderateScale(16),
   },
   manProduct: {
     width: '90%',
     // height: '30%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    elevation: 6,
-    marginTop: 100
+    borderRadius: moderateScale(10),
+    elevation: moderateScale(6),
+    marginTop: horizontalScale(100)
   },
   Viewman: {
     width: '90%',
     // height: '30%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    elevation: 6,
+    borderRadius: moderateScale(10),
+    elevation: moderateScale(6),
     margin: '5%',
     // justifyContent: 'center',
-    padding: 10,
+    padding: horizontalScale(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     // columnGap:90
@@ -156,30 +160,30 @@ const styles = StyleSheet.create({
   },
 
   modalContent: {
-    width: 300,
-    padding: 20,
+    width: horizontalScale(300),
+    padding: horizontalScale(20),
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: moderateScale(10),
     alignItems: 'center',
 
   },
   modalText: {
     color: 'black',
-    fontSize: 18,
-    marginBottom: 20,
+    fontSize: moderateScale(18),
+    marginBottom: horizontalScale(20),
   },
   DropDown: {
-    paddingBottom: 30,
-    paddingHorizontal: 5,
+    paddingBottom: horizontalScale(30),
+    paddingHorizontal: horizontalScale(5),
 
   },
   input: {
     color: 'black',
     borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-    padding: 10,
-    height: 50,
+    borderRadius: moderateScale(5),
+    marginBottom: horizontalScale(10),
+    padding: horizontalScale(10),
+    height:  verticalScale(50),
     width: '95%',
   },
 });
