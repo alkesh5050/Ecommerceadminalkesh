@@ -6,23 +6,50 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { horizontalScale, moderateScale, verticalScale } from '../../../assets/Fonts/Matrix/Matrix';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from "@react-native-community/netinfo";
+
 
 export default function Category() {
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState('');
   const [data, setdata] = useState([]);
   const [update, setUpdate] = useState(null);
+  const [isConnected, setConnected] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setConnected(state.isConnected);
+
+    });
+    // console.log("isConnected",isConnected);
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     getdata();
-  }, []);
+  }, [isConnected]);
 
   const getdata = async () => {
-    const Cat_data = await AsyncStorage.getItem("category");
-    setdata(JSON.parse(Cat_data));
-    // console.log(Cat_data)
-  }
 
+    if (isConnected) {
+
+      const response = await fetch("https://dummyjson.com/products/categories")
+      const data = await response.json();
+      setdata(data);
+
+    } else {
+      const Cat_data = await AsyncStorage.getItem("category");
+   if (Cat_data) {
+      setdata(JSON.parse(Cat_data));
+    }
+    }
+
+ 
+
+  }
+  console.log("ssssss", data);
 
   const handleSubmit = async (id) => {
     setModalVisible(false);
@@ -33,7 +60,7 @@ export default function Category() {
 
       const udata = JSON.parse(catData).map((v) => {
         if (v.id === update) {
-          return ({ id: update, cat_name: name });
+          return ({ id: update, name: name });
         } else {
           return v;
         }
@@ -47,12 +74,12 @@ export default function Category() {
         // console.log("fffffff");
         const asyncData = JSON.parse(catData);
 
-        asyncData.push({ id: Math.floor(Math.random() * 10000), cat_name: name })
+        asyncData.push({ id: Math.floor(Math.random() * 10000), name: name })
 
         await AsyncStorage.setItem("category", JSON.stringify(asyncData))
         setdata(asyncData)
       } else {
-        let data = [{ id: Math.floor(Math.random() * 10000), cat_name: name }];
+        let data = [{ id: Math.floor(Math.random() * 10000), name: name }];
 
         await AsyncStorage.setItem("category", JSON.stringify(data))
         setdata(asyncData)
@@ -83,27 +110,30 @@ export default function Category() {
     const fdata = JSON.parse(data).find((v) => v.id === id);
     // console.log("sdddd", fdata.cat_name);
 
-    setName(fdata.cat_name);
+    setName(fdata.name);
     setUpdate(id)
   }
 
   return (
     <ScrollView>
-      <View style={styles.container}>
 
+      <View style={styles.div}>
         <TouchableOpacity
-          style={styles.button}
+          style={styles.Opacity}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.buttonText}>Add Category</Text>
+          <Text style={styles.Opacitytext}>Add Category</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.container}>
 
         <View style={styles.manProduct}>
 
           {
             data.map((v, i) => (
               <View key={v.id} style={styles.Viewman}>
-                <Text style={{ color: 'black' }}>{v.cat_name}</Text>
+                <Text style={{ color: 'black' }}>{v.name}</Text>
                 <View style={styles.iconview}>
 
                   <TouchableOpacity onPress={() => Editdata(v.id)}>
@@ -160,8 +190,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: 'center',
-    paddingTop: horizontalScale(80),
+    // paddingTop: horizontalScale(30),
     alignItems: 'center',
+    paddingBottom: 10
   },
   input: {
     color: 'black',
@@ -197,10 +228,10 @@ const styles = StyleSheet.create({
   manProduct: {
     width: '90%',
     // height: '30%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#355554',
     borderRadius: moderateScale(10),
     elevation: moderateScale(6),
-    marginTop: 100
+    marginTop: 50
   },
   Viewman: {
     width: '90%',
@@ -232,4 +263,18 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(18),
     marginBottom: horizontalScale(20),
   },
+  div: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: '10%'
+  },
+  Opacity: {
+    padding: horizontalScale(12),
+    backgroundColor: '#007BFF',
+    borderRadius: moderateScale(50),
+  },
+  Opacitytext: {
+    color: 'white',
+    fontSize: moderateScale(16),
+  }
 });

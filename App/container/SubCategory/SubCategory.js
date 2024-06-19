@@ -20,76 +20,85 @@ export default function SubCategory() {
 
   return (
     <ScrollView>
-    <View style={styles.container}>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.buttonText}>Add SubCategory</Text>
-      </TouchableOpacity>
-
-      <View style={styles.manProduct}>
-        <View style={styles.Viewman}>
-          <Text style={{ color: 'black' }}>men</Text>
-          <View style={styles.iconview}>
-          <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
-          <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
-
-          </View>
-
-        </View>
-        <View style={styles.Viewman}>
-          <Text style={{ color: 'black', }}>Women</Text>
-          <View style={styles.iconview}>
-          <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
-          <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
-
-          </View>
-
-        </View>
-
+      <View style={styles.div}>
+        <TouchableOpacity
+          style={styles.Opacity}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.Opacitytext}>Add Category</Text>
+        </TouchableOpacity>
       </View>
+      <View style={styles.container}>
+{/* 
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.buttonText}>Add SubCategory</Text>
+        </TouchableOpacity> */}
 
-      <Modal
-        // animationType="slide"
-        // transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
+        <View style={styles.manProduct}>
+          <View style={styles.Viewman}>
+            <Text style={{ color: 'black' }}>men</Text>
+            <View style={styles.iconview}>
+              <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
+              <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
 
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>category</Text>
-            <View style={styles.DropDown}>
-              <DropDownPicker
-             
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-                placeholder={'Category'}
-              />
             </View>
-            <TextInput
-              style={styles.input}
-              placeholder=' Add SubCategory Name'
-              placeholderTextColor='#9B9B9B'
 
-            />
-
-            <TouchableOpacity
-              style={styles.button1}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.buttonText}>Submit</Text>
-            </TouchableOpacity>
           </View>
+          <View style={styles.Viewman}>
+            <Text style={{ color: 'black', }}>Women</Text>
+            <View style={styles.iconview}>
+              <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
+              <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
+
+            </View>
+
+          </View>
+
         </View>
-      </Modal>
-    </View>
+
+        <Modal
+          // animationType="slide"
+          // transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>category</Text>
+              <View style={styles.DropDown}>
+                <DropDownPicker
+
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  placeholder={'Category'}
+                />
+              </View>
+              <TextInput
+                style={styles.input}
+                placeholder=' Add SubCategory Name'
+                placeholderTextColor='#9B9B9B'
+
+              />
+
+              <TouchableOpacity
+                style={styles.button1}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
     </ScrollView>
   );
 }
@@ -98,15 +107,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: 'center',
-    paddingTop: horizontalScale(80),
+    // paddingTop: horizontalScale(10),
     alignItems: 'center',
+    paddingBottom:10,
+
   },
   input: {
 
     height: verticalScale(40),
     borderColor: 'gray',
     borderWidth: 1,
-    paddingHorizontal:  horizontalScale(100),
+    paddingHorizontal: horizontalScale(100),
     borderRadius: moderateScale(5),
     marginBottom: horizontalScale(10)
   },
@@ -129,10 +140,11 @@ const styles = StyleSheet.create({
   manProduct: {
     width: '90%',
     // height: '30%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#355554',
     borderRadius: moderateScale(10),
     elevation: moderateScale(6),
-    marginTop: horizontalScale(100)
+    marginTop: horizontalScale(10),
+  
   },
   Viewman: {
     width: '90%',
@@ -183,7 +195,21 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(5),
     marginBottom: horizontalScale(10),
     padding: horizontalScale(10),
-    height:  verticalScale(50),
+    height: verticalScale(50),
     width: '95%',
   },
+  div:{
+    flexDirection: 'row',
+     justifyContent: 'flex-end',
+      padding:'10%'
+  },
+  Opacity:{
+    padding: horizontalScale(12),
+    backgroundColor: '#007BFF',
+    borderRadius: moderateScale(50),
+  },
+  Opacitytext:{
+    color: 'white',
+    fontSize: moderateScale(16),
+  }
 });
