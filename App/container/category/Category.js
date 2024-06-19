@@ -49,7 +49,7 @@ export default function Category() {
  
 
   }
-  console.log("ssssss", data);
+  // console.log("ssssss", data);
 
   const handleSubmit = async (id) => {
     setModalVisible(false);
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#355554',
     borderRadius: moderateScale(10),
     elevation: moderateScale(6),
-    marginTop: 50
+
   },
   Viewman: {
     width: '90%',

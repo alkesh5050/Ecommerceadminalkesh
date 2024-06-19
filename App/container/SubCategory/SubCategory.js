@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#355554',
     borderRadius: moderateScale(10),
     elevation: moderateScale(6),
-    marginTop: horizontalScale(10),
+  
   
   },
   Viewman: {
