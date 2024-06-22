@@ -26,15 +26,17 @@ export default function Product() {
   ]);
   return (
     <ScrollView>
+      <View style={styles.div}>
+        <TouchableOpacity
+          style={styles.Opacity}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.Opacitytext}>Add Product</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.container}>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.buttonText}>Add Product</Text>
-        </TouchableOpacity>
 
         <View style={styles.manProduct}>
           <View style={styles.Viewman}>
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: 'center',
-    paddingTop: horizontalScale(80),
+    paddingTop: horizontalScale(20),
     alignItems: 'center',
   },
   input: {
@@ -158,11 +160,10 @@ const styles = StyleSheet.create({
   },
   manProduct: {
     width: '90%',
-    // height: '30%',
     backgroundColor: '#FFFFFF',
     borderRadius: moderateScale(10),
     elevation: moderateScale(6),
-    marginTop: 100
+    bottom: 10
   },
   Viewman: {
     width: '90%',
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
   DropDown1: {
     paddingBottom: 30,
     paddingHorizontal: 5,
-   zIndex: 999
+    zIndex: 999
   },
   input: {
     color: 'black',
@@ -222,4 +223,18 @@ const styles = StyleSheet.create({
     height: '11%',
     width: '95%',
   },
+  div: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    padding: '10%'
+  },
+  Opacity: {
+    padding: horizontalScale(12),
+    backgroundColor: '#007BFF',
+    borderRadius: moderateScale(50),
+  },
+  Opacitytext: {
+    color: 'white',
+    fontSize: moderateScale(16),
+  }
 });

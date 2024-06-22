@@ -125,8 +125,8 @@ export default function Cate() {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.DropDown}>
-                            <DropDownPicker
 
+                            <DropDownPicker
                                 open={open}
                                 value={value}
                                 items={items}
