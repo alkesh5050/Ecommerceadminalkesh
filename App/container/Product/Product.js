@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   manProduct: {
     width: '90%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#355554',
     borderRadius: moderateScale(10),
     elevation: moderateScale(6),
     bottom: 10

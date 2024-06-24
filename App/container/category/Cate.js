@@ -9,10 +9,13 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { RadioButton } from 'react-native-paper';
 import { CheckBox } from 'react-native-elements';
 
+
+
 export default function Cate() {
-    const [selectedValue, setSelectedValue] = useState('option1');
+    const [selectedValue, setSelectedValue] = useState('');
     const [isSelected, setSelection] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [dropDownPicker, setDropDownPicker] = useState('');
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
@@ -51,11 +54,14 @@ export default function Cate() {
     // })
 
     let userSchema = Yup.object({
-        name: string().required("enter name").matches(/^[a-zA-Z ]+$/, "enter valid name"),
-        email: string().required().email(),
-        mobile: string().required().matches(/^\d{10}$/, "Mobile number must be 10 digit"),
-        age: number().required().min(18, "enter your age").typeError("Please enter age in digit"),
-        password: string().required().matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must be 8 combination of alpabet, digit and special symbol.")
+        name: Yup.string().required("enter name").matches(/^[a-zA-Z ]+$/, "enter valid name"),
+        email: Yup.string().required().email(),
+        mobile: Yup.string().required().matches(/^\d{10}$/, "Mobile number must be 10 digit"),
+        age: Yup.number().required().min(18, "enter your age").typeError("Please enter age in digit"),
+        password: Yup.string().required().matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must be 8 combination of alpabet, digit and special symbol."),
+        check: Yup.boolean().oneOf([true]).required(),
+        Radio: Yup.string().required(),
+        dropDownPicker :Yup.string().required(),
     })
 
     const formik = useFormik({
@@ -65,6 +71,9 @@ export default function Cate() {
             age: '',
             mobile: '',
             password: '',
+            check:'',
+            Radio:'',
+            dropDownPicker:'',
         },
         validationSchema: userSchema,
 
@@ -74,7 +83,10 @@ export default function Cate() {
         },
     });
 
-    const { handleSubmit, handleChange, errors, values } = formik;
+    const { handleSubmit, handleChange, errors, values, setFieldValue } = formik;
+
+    // console.log("errors",errors);
+    // console.log("check",errors.check);
 
     //dropdown
     //radio button
@@ -83,36 +95,6 @@ export default function Cate() {
     return (
         <View style={styles.centeredView}>
 
-            <View style={styles.checkboxContainer}>
-                <CheckBox
-                    checked={isSelected}
-                    onPress={() => setSelection(!isSelected)}
-                    containerStyle={styles.checkbox}
-                />
-                <Text style={styles.label}>Do you like React Native?</Text>
-            </View>
-
-            <View style={styles.radioGroup}>
-                <View style={styles.radioButton}>
-                    <RadioButton.Android
-                        value="option1"
-                        status={selectedValue === 'option1' ? 'checked' : 'unchecked'}
-                        onPress={() => setSelectedValue('option1')}
-                        color="#007BFF"
-                    />
-                    <Text style={styles.radioLabel}> ReactJS</Text>
-                </View>
-
-                <View style={styles.radioButton}>
-                    <RadioButton.Android
-                        value="option2"
-                        status={selectedValue === 'option2' ? 'checked' : 'unchecked'}
-                        onPress={() => setSelectedValue('option2')}
-                        color="#007BFF"
-                    />
-                    <Text style={styles.radioLabel}>React Native</Text>
-                </View>
-            </View>
 
             <Modal
                 animationType="slide"
@@ -123,10 +105,52 @@ export default function Cate() {
                     setModalVisible(!modalVisible);
                 }}>
                 <View style={styles.centeredView}>
+
                     <View style={styles.modalView}>
+
+                        <View style={styles.checkboxContainer}>
+                            <CheckBox
+                                checked={isSelected}
+                                onPress={() => {setSelection(!isSelected);setFieldValue("check",!isSelected)}}
+                                onChangeText={handleChange('check')}
+                                containerStyle={styles.checkbox}
+                            />
+                            <Text style={styles.label}>Do you like React Native?</Text>
+                        </View>
+                        <Text style={{ color: 'red' }}>{isSelected ? '' : errors.check}</Text>
+                   
+
+
+                        <View style={styles.radioGroup}>
+                            <View style={styles.radioButton}>
+                                <RadioButton.Android
+                                    value="option1"
+                                    status={selectedValue === 'option1' ? 'checked' : 'unchecked'}
+                                    onPress={() => {setSelectedValue('option1');setFieldValue('Radio','ReactJS')}}
+                                    color="#007BFF"
+                                    onChangeText={handleChange('Radio')}
+                                />
+                                <Text style={styles.radioLabel}> ReactJS</Text>
+                            </View>
+
+                            <View style={styles.radioButton}>
+                                <RadioButton.Android
+                                    value="option2"
+                                    status={selectedValue === 'option2' ? 'checked' : 'unchecked'}
+                                    onPress={() => {setSelectedValue('option2');setFieldValue('Radio','React Native')}}
+                                    color="#007BFF"
+                                    onChangeText={handleChange('Radio')}
+                                />
+                                <Text style={styles.radioLabel}>React Native</Text>
+                            </View>
+
+                            
+                        </View>
+                        <Text style={{ color: 'red' }}>{selectedValue ? '' : errors.Radio}</Text>
                         <View style={styles.DropDown}>
 
                             <DropDownPicker
+                             
                                 open={open}
                                 value={value}
                                 items={items}
@@ -134,8 +158,14 @@ export default function Cate() {
                                 setValue={setValue}
                                 setItems={setItems}
                                 placeholder={'Category'}
+                                onChangeText={handleChange('dropDownPicker')}
+                                onPress={() => setDropDownPicker(!dropDownPicker)}
+                                onSelectItem={(items)=>setFieldValue('dropDownPicker',items.value)}
                             />
+                            <Text style={{ color: 'red' }}>{dropDownPicker ? '' : errors.dropDownPicker}</Text>
                         </View>
+
+                        
                         <TextInput
                             color={'black'}
                             placeholder='name'
@@ -180,6 +210,7 @@ export default function Cate() {
 
                         />
                         <Text style={{ color: 'red' }}>{errors ? errors.password : ''}</Text>
+                        
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => handleSubmit()}>
@@ -210,7 +241,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        marginTop: 20,
         borderRadius: 8,
         backgroundColor: 'white',
         padding: 16,
@@ -226,6 +256,7 @@ const styles = StyleSheet.create({
     radioButton: {
         flexDirection: 'row',
         alignItems: 'center',
+
     },
     radioLabel: {
         marginLeft: 8,
@@ -270,6 +301,7 @@ const styles = StyleSheet.create({
     DropDown: {
         paddingBottom: horizontalScale(30),
         paddingHorizontal: horizontalScale(5),
+        paddingTop: 40
 
     },
     checkboxContainer: {
