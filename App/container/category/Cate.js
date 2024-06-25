@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
+import { Alert, Modal, StyleSheet, Text, Pressable, View, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, ScrollView } from 'react-native';
 import { object, string, number, date, InferType } from 'yup';
 import { horizontalScale, moderateScale, verticalScale } from '../../../assets/Fonts/Matrix/Matrix';
 import { useFormik } from 'formik';
@@ -61,7 +61,7 @@ export default function Cate() {
         password: Yup.string().required().matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must be 8 combination of alpabet, digit and special symbol."),
         check: Yup.boolean().oneOf([true]).required(),
         Radio: Yup.string().required(),
-        dropDownPicker :Yup.string().required(),
+        dropDownPicker: Yup.string().required(),
     })
 
     const formik = useFormik({
@@ -71,9 +71,9 @@ export default function Cate() {
             age: '',
             mobile: '',
             password: '',
-            check:'',
-            Radio:'',
-            dropDownPicker:'',
+            check: '',
+            Radio: '',
+            dropDownPicker: '',
         },
         validationSchema: userSchema,
 
@@ -86,151 +86,285 @@ export default function Cate() {
     const { handleSubmit, handleChange, errors, values, setFieldValue } = formik;
 
     // console.log("errors",errors);
-    // console.log("check",errors.check);
+    console.log("check", errors.name);
 
     //dropdown
     //radio button
     //check box
 
     return (
-        <View style={styles.centeredView}>
+
+        <Modal
+            isVisible={modalVisible}>
+            <KeyboardAvoidingView enabled behavior={Platform.OS === "android" ? undefined : "position"}>
+                <ScrollView scrollEnabled={true} keyboardShouldPersistTaps="handled">
+                    <View style={[styles.modalContent, { flex: 1 }]}>
+                        <View style={styles.centeredView}>
+
+                            <View style={styles.modalView}>
+
+                                <View style={styles.checkboxContainer}>
+                                    <CheckBox
+                                        checked={isSelected}
+                                        onPress={() => { setSelection(!isSelected); setFieldValue("check", !isSelected) }}
+                                        onChangeText={handleChange('check')}
+                                        containerStyle={styles.checkbox}
+                                    />
+                                    <Text style={styles.label}>Do you like React Native?</Text>
+                                </View>
+                                <Text style={{ color: 'red' }}>{isSelected ? '' : errors.check}</Text>
 
 
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    Alert.alert('Modal has been closed.');
-                    setModalVisible(!modalVisible);
-                }}>
-                <View style={styles.centeredView}>
 
-                    <View style={styles.modalView}>
+                                <View style={styles.radioGroup}>
+                                    <View style={styles.radioButton}>
+                                        <RadioButton.Android
+                                            value="option1"
+                                            status={selectedValue === 'option1' ? 'checked' : 'unchecked'}
+                                            onPress={() => { setSelectedValue('option1'); setFieldValue('Radio', 'ReactJS') }}
+                                            color="#007BFF"
+                                            onChangeText={handleChange('Radio')}
+                                        />
+                                        <Text style={styles.radioLabel}> ReactJS</Text>
+                                    </View>
 
-                        <View style={styles.checkboxContainer}>
-                            <CheckBox
-                                checked={isSelected}
-                                onPress={() => {setSelection(!isSelected);setFieldValue("check",!isSelected)}}
-                                onChangeText={handleChange('check')}
-                                containerStyle={styles.checkbox}
-                            />
-                            <Text style={styles.label}>Do you like React Native?</Text>
-                        </View>
-                        <Text style={{ color: 'red' }}>{isSelected ? '' : errors.check}</Text>
-                   
+                                    <View style={styles.radioButton}>
+                                        <RadioButton.Android
+                                            value="option2"
+                                            status={selectedValue === 'option2' ? 'checked' : 'unchecked'}
+                                            onPress={() => { setSelectedValue('option2'); setFieldValue('Radio', 'React Native') }}
+                                            color="#007BFF"
+                                            onChangeText={handleChange('Radio')}
+                                        />
+                                        <Text style={styles.radioLabel}>React Native</Text>
+                                    </View>
 
 
-                        <View style={styles.radioGroup}>
-                            <View style={styles.radioButton}>
-                                <RadioButton.Android
-                                    value="option1"
-                                    status={selectedValue === 'option1' ? 'checked' : 'unchecked'}
-                                    onPress={() => {setSelectedValue('option1');setFieldValue('Radio','ReactJS')}}
-                                    color="#007BFF"
-                                    onChangeText={handleChange('Radio')}
+                                </View>
+                                <Text style={{ color: 'red' }}>{selectedValue ? '' : errors.Radio}</Text>
+                                <View style={styles.DropDown}>
+
+                                    <DropDownPicker
+
+                                        open={open}
+                                        value={value}
+                                        items={items}
+                                        setOpen={setOpen}
+                                        setValue={setValue}
+                                        setItems={setItems}
+                                        placeholder={'Category'}
+                                        onChangeText={handleChange('dropDownPicker')}
+                                        onPress={() => setDropDownPicker(!dropDownPicker)}
+                                        onSelectItem={(items) => setFieldValue('dropDownPicker', items.value)}
+                                    />
+                                    <Text style={{ color: 'red' }}>{dropDownPicker ? '' : errors.dropDownPicker}</Text>
+                                </View>
+
+
+                                <TextInput
+                                    style={styles.input}
+                                    color={'black'}
+                                    placeholder='name'
+                                    placeholderTextColor='#9B9B9B'
+                                    onChangeText={handleChange('name')}
+                                    value={values.name}
                                 />
-                                <Text style={styles.radioLabel}> ReactJS</Text>
-                            </View>
+                                <Text style={{ color: 'red' }}>{errors ? errors.name : ''}</Text>
 
-                            <View style={styles.radioButton}>
-                                <RadioButton.Android
-                                    value="option2"
-                                    status={selectedValue === 'option2' ? 'checked' : 'unchecked'}
-                                    onPress={() => {setSelectedValue('option2');setFieldValue('Radio','React Native')}}
-                                    color="#007BFF"
-                                    onChangeText={handleChange('Radio')}
+
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='age'
+                                    placeholderTextColor='#9B9B9B'
+                                    onChangeText={handleChange('age')}
+                                    value={values.age}
                                 />
-                                <Text style={styles.radioLabel}>React Native</Text>
+                                <Text style={{ color: 'red' }}>{errors ? errors.age : ''}</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='email'
+                                    placeholderTextColor='#9B9B9B'
+                                    onChangeText={handleChange('email')}
+                                    value={values.email}
+                                />
+                                <Text style={{ color: 'red' }}>{errors ? errors.email : ''}</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='mobile'
+                                    placeholderTextColor='#9B9B9B'
+                                    onChangeText={handleChange('mobile')}
+                                    value={values.mobile}
+                                />
+                                <Text style={{ color: 'red' }}>{errors ? errors.mobile : ''}</Text>
+
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='password'
+                                    placeholderTextColor='#9B9B9B'
+                                    onChangeText={handleChange('password')}
+                                    value={values.password}
+
+                                />
+                                <Text style={{ color: 'red' }}>{errors ? errors.password : ''}</Text>
+
+                                <Pressable
+                                    style={[styles.button, styles.buttonClose]}
+                                    onPress={() => handleSubmit()}>
+                                    <Text style={styles.textStyle}>Hide Modal</Text>
+                                </Pressable>
                             </View>
-
-                            
                         </View>
-                        <Text style={{ color: 'red' }}>{selectedValue ? '' : errors.Radio}</Text>
-                        <View style={styles.DropDown}>
-
-                            <DropDownPicker
-                             
-                                open={open}
-                                value={value}
-                                items={items}
-                                setOpen={setOpen}
-                                setValue={setValue}
-                                setItems={setItems}
-                                placeholder={'Category'}
-                                onChangeText={handleChange('dropDownPicker')}
-                                onPress={() => setDropDownPicker(!dropDownPicker)}
-                                onSelectItem={(items)=>setFieldValue('dropDownPicker',items.value)}
-                            />
-                            <Text style={{ color: 'red' }}>{dropDownPicker ? '' : errors.dropDownPicker}</Text>
-                        </View>
-
-                        
-                        <TextInput
-                            color={'black'}
-                            placeholder='name'
-                            placeholderTextColor='#9B9B9B'
-                            onChangeText={handleChange('name')}
-                            value={values.name}
-                        />
-                        <Text style={{ color: 'red' }}>{errors ? errors.name : ''}</Text>
-
-
-                        <TextInput
-                            color={'black'}
-                            placeholder='age'
-                            placeholderTextColor='#9B9B9B'
-                            onChangeText={handleChange('age')}
-                            value={values.age}
-                        />
-                        <Text style={{ color: 'red' }}>{errors ? errors.age : ''}</Text>
-                        <TextInput
-                            color={'black'}
-                            placeholder='email'
-                            placeholderTextColor='#9B9B9B'
-                            onChangeText={handleChange('email')}
-                            value={values.email}
-                        />
-                        <Text style={{ color: 'red' }}>{errors ? errors.email : ''}</Text>
-                        <TextInput
-                            color={'black'}
-                            placeholder='mobile'
-                            placeholderTextColor='#9B9B9B'
-                            onChangeText={handleChange('mobile')}
-                            value={values.mobile}
-                        />
-                        <Text style={{ color: 'red' }}>{errors ? errors.mobile : ''}</Text>
-
-                        <TextInput
-                            color={'black'}
-                            placeholder='password'
-                            placeholderTextColor='#9B9B9B'
-                            onChangeText={handleChange('password')}
-                            value={values.password}
-
-                        />
-                        <Text style={{ color: 'red' }}>{errors ? errors.password : ''}</Text>
-                        
-                        <Pressable
-                            style={[styles.button, styles.buttonClose]}
-                            onPress={() => handleSubmit()}>
-                            <Text style={styles.textStyle}>Hide Modal</Text>
-                        </Pressable>
                     </View>
-                </View>
-            </Modal>
-            <Pressable
-                style={[styles.button, styles.buttonOpen]}
-                onPress={() => setModalVisible(true)}>
-                <Text style={styles.textStyle}>Show Modal</Text>
-            </Pressable>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </Modal>
 
-        </View>
+        // <View style={styles.centeredView}>
+        //               {/* <KeyboardAvoidingView behavior={"padding"} style={styles.safeAreaView}> */}
+
+        //             <Modal
+        //                 avoidKeyboard
+        //                 animationType="slide"
+        //                 transparent={true}
+        //                 visible={modalVisible}
+        //                 style={{position: 'absolute', width: 0.9*300, height: 0.9*600}}
+        //                 onRequestClose={() => {
+        //                     Alert.alert('Modal has been closed.');
+        //                     setModalVisible(!modalVisible);
+        //                 }}>
+        //                 <View style={styles.centeredView}>
+
+        //                     <View style={styles.modalView}>
+
+        //                         <View style={styles.checkboxContainer}>
+        //                             <CheckBox
+        //                                 checked={isSelected}
+        //                                 onPress={() => { setSelection(!isSelected); setFieldValue("check", !isSelected) }}
+        //                                 onChangeText={handleChange('check')}
+        //                                 containerStyle={styles.checkbox}
+        //                             />
+        //                             <Text style={styles.label}>Do you like React Native?</Text>
+        //                         </View>
+        //                         <Text style={{ color: 'red' }}>{isSelected ? '' : errors.check}</Text>
+
+
+
+        //                         <View style={styles.radioGroup}>
+        //                             <View style={styles.radioButton}>
+        //                                 <RadioButton.Android
+        //                                     value="option1"
+        //                                     status={selectedValue === 'option1' ? 'checked' : 'unchecked'}
+        //                                     onPress={() => { setSelectedValue('option1'); setFieldValue('Radio', 'ReactJS') }}
+        //                                     color="#007BFF"
+        //                                     onChangeText={handleChange('Radio')}
+        //                                 />
+        //                                 <Text style={styles.radioLabel}> ReactJS</Text>
+        //                             </View>
+
+        //                             <View style={styles.radioButton}>
+        //                                 <RadioButton.Android
+        //                                     value="option2"
+        //                                     status={selectedValue === 'option2' ? 'checked' : 'unchecked'}
+        //                                     onPress={() => { setSelectedValue('option2'); setFieldValue('Radio', 'React Native') }}
+        //                                     color="#007BFF"
+        //                                     onChangeText={handleChange('Radio')}
+        //                                 />
+        //                                 <Text style={styles.radioLabel}>React Native</Text>
+        //                             </View>
+
+
+        //                         </View>
+        //                         <Text style={{ color: 'red' }}>{selectedValue ? '' : errors.Radio}</Text>
+        //                         <View style={styles.DropDown}>
+
+        //                             <DropDownPicker
+
+        //                                 open={open}
+        //                                 value={value}
+        //                                 items={items}
+        //                                 setOpen={setOpen}
+        //                                 setValue={setValue}
+        //                                 setItems={setItems}
+        //                                 placeholder={'Category'}
+        //                                 onChangeText={handleChange('dropDownPicker')}
+        //                                 onPress={() => setDropDownPicker(!dropDownPicker)}
+        //                                 onSelectItem={(items) => setFieldValue('dropDownPicker', items.value)}
+        //                             />
+        //                             <Text style={{ color: 'red' }}>{dropDownPicker ? '' : errors.dropDownPicker}</Text>
+        //                         </View>
+
+
+        //                         <TextInput
+        //                             style={styles.input}
+        //                             color={'black'}
+        //                             placeholder='name'
+        //                             placeholderTextColor='#9B9B9B'
+        //                             onChangeText={handleChange('name')}
+        //                             value={values.name}
+        //                         />
+        //                         <Text style={{ color: 'red' }}>{errors ? errors.name : ''}</Text>
+
+
+        //                         <TextInput
+        //                             style={styles.input}
+        //                             placeholder='age'
+        //                             placeholderTextColor='#9B9B9B'
+        //                             onChangeText={handleChange('age')}
+        //                             value={values.age}
+        //                         />
+        //                         <Text style={{ color: 'red' }}>{errors ? errors.age : ''}</Text>
+        //                         <TextInput
+        //                             style={styles.input}
+        //                             placeholder='email'
+        //                             placeholderTextColor='#9B9B9B'
+        //                             onChangeText={handleChange('email')}
+        //                             value={values.email}
+        //                         />
+        //                         <Text style={{ color: 'red' }}>{errors ? errors.email : ''}</Text>
+        //                         <TextInput
+        //                             style={styles.input}
+        //                             placeholder='mobile'
+        //                             placeholderTextColor='#9B9B9B'
+        //                             onChangeText={handleChange('mobile')}
+        //                             value={values.mobile}
+        //                         />
+        //                         <Text style={{ color: 'red' }}>{errors ? errors.mobile : ''}</Text>
+
+        //                         <TextInput
+        //                             style={styles.input}
+        //                             placeholder='password'
+        //                             placeholderTextColor='#9B9B9B'
+        //                             onChangeText={handleChange('password')}
+        //                             value={values.password}
+
+        //                         />
+        //                         <Text style={{ color: 'red' }}>{errors ? errors.password : ''}</Text>
+
+        //                         <Pressable
+        //                             style={[styles.button, styles.buttonClose]}
+        //                             onPress={() => handleSubmit()}>
+        //                             <Text style={styles.textStyle}>Hide Modal</Text>
+        //                         </Pressable>
+        //                     </View>
+        //                 </View>
+        //             </Modal>
+        //             {/* </KeyboardAvoidingView> */}
+        //     <Pressable
+        //         style={[styles.button, styles.buttonOpen]}
+        //         onPress={() => setModalVisible(true)}>
+        //         <Text style={styles.textStyle}>Show Modal</Text>
+        //     </Pressable>
+
+        // </View>
+
     )
 }
 
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
     centeredView: {
         flex: 1,
         justifyContent: 'center',
@@ -282,6 +416,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 10,
         elevation: 2,
+
     },
     buttonOpen: {
         backgroundColor: '#F194FF',
@@ -299,9 +434,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     DropDown: {
-        paddingBottom: horizontalScale(30),
+        paddingBottom: horizontalScale(20),
         paddingHorizontal: horizontalScale(5),
-        paddingTop: 40
+        paddingTop: 20
 
     },
     checkboxContainer: {
@@ -316,6 +451,21 @@ const styles = StyleSheet.create({
         margin: 8,
         color: 'black'
     },
+    input: {
+        color: 'black',
+        width: '100%',
+        padding: 8,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        marginVertical: 5,
+        width: 250,
+    },
+    modalContainer: {
+        justifyContent: 'flex-end'
+    },
+    modalContent: {
+    }
 });
 
 
