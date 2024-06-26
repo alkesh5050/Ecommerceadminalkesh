@@ -20,9 +20,8 @@ export default function Cate() {
     const [modalVisible, setModalVisible] = useState(false);
     const [dropDownPicker, setDropDownPicker] = useState('');
     const [data, setdata] = useState([]);
+    const [name, setName] = useState('');
     const [update, setUpdate] = useState(null);
-
-
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
@@ -30,34 +29,7 @@ export default function Cate() {
         { label: 'shirt for women', value: 'shirt for women' },
         { label: 'women shoes', value: 'women shoes' },
     ]);
-    // let userSchema = Yup.object({
-    //     name: Yup.string().required(),
-    //     age: Yup.number().required().positive().integer().min(18),
-    //     email: Yup.string().email().required(),
-    //     mobile: Yup.string()
-    //         .required("required")
-    //         .matches(phoneRegExp, 'Phone number is not valid')
-    //         .min(10, "too short")
-    //         .max(10, "too long"),
 
-
-    //     password: Yup
-    //         .string()
-    //         .min(8, 'Password must be 8 characters long')
-    //         .matches(/[0-9]/, 'Password requires a number')
-    //         .matches(/[a-z]/, 'Password requires a lowercase letter')
-    //         .matches(/[A-Z]/, 'Password requires an uppercase letter')
-    //         .matches(/[^\w]/, 'Password requires a symbol'),
-
-    // });
-
-    // let userSchema = Yup.object({
-    //     name: string().required("Please enter name").matches(/^[a-zA-Z ]+$/, "Please enter valid name"),
-    //     email: string().required().email(),
-    //     mobile: string().required().matches(/^\d{10}$/, "Mobile number must be 10 digit"),
-    //     age: number().required().min(18, "Minimum 18 age allowed").typeError("Please enter age in digit"),
-    //     password: string().required().matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, "Password must be 8 combination of alpabet, digit and special symbol.")
-    // })
 
     let userSchema = Yup.object({
         name: Yup.string().required("enter name").matches(/^[a-zA-Z ]+$/, "enter valid name"),
@@ -92,8 +64,9 @@ export default function Cate() {
     useEffect(() => {
         getdata();
     }, []);
-    const getdata = async () => {
 
+
+    const getdata = async () => {
 
         const catData = await AsyncStorage.getItem("category");
         if (catData) {
@@ -105,30 +78,49 @@ export default function Cate() {
     const handleSubmitdata = async () => {
 
         const catData = await AsyncStorage.getItem("category");
-        console.log(catData);
+        // console.log(catData);
 
+        console.log("update", update);
 
+        if (update) {
 
-        if (catData) {
-            let asyncdata = JSON.parse(catData);
-            asyncdata.push({
-                id: Math.floor(Math.random() * 10000), name: values.name, email: values.email, age: values.age,
-                mobile: values.mobile, password: values.password, check: values.check, Radio: values.Radio, dropDownPicker: values.dropDownPicker
+            const udata = JSON.parse(catData).map((v) => {
+                if (v.id === update) {
+                    return ({ id: update, name: values.name, age: values.age,email: values.email, mobile: values.mobile,password: values.password });
+                } else {
+                    return v;
+                }
             })
-            await AsyncStorage.setItem("category", JSON.stringify(asyncdata));
-            setdata(asyncdata)
+
+            await AsyncStorage.setItem("category", JSON.stringify(udata));
+        
+            setdata(udata);
 
         } else {
-            let data = [{
-                id: Math.floor(Math.random() * 10000), name: values.name, email: values.email, age: values.age,
-                mobile: values.mobile, password: values.password, check: values.check, Radio: values.Radio, dropDownPicker: values.dropDownPicker
-            }];
-            await AsyncStorage.setItem("category", JSON.stringify(data));
-            setdata(data)
-            // console.log("aaaaaaa", data);
-        }
+            if (catData) {
+                let asyncdata = JSON.parse(catData);
+                asyncdata.push({
+                    id: Math.floor(Math.random() * 10000), name: values.name, age: values.age,email: values.email, mobile: values.mobile,password: values.password
+                })
+                await AsyncStorage.setItem("category", JSON.stringify(asyncdata));
+                setdata(asyncdata)
 
+            } else {
+                let data = [{
+                    id: Math.floor(Math.random() * 10000),name: values.name, age: values.age,email: values.email, mobile: values.mobile,password: values.password
+
+                }];
+                await AsyncStorage.setItem("category", JSON.stringify(data));
+                setdata(asyncdata)
+                // console.log("aaaaaaa", data);
+            }
+        }
+        setName('')
+        setModalVisible(false);
+        setUpdate(null)
+        formik.resetForm();
     }
+
     const handleDelete = async (id) => {
         const data = await AsyncStorage.getItem("category");
         const fData = JSON.parse(data).filter((v) => v.id !== id);
@@ -144,6 +136,7 @@ export default function Cate() {
 
         setValues(data);
 
+        setUpdate(data.id)
     }
 
     const { handleSubmit, handleChange, errors, values, setFieldValue, setValues } = formik;
@@ -162,7 +155,7 @@ export default function Cate() {
             <KeyboardAvoidingView enabled behavior={Platform.OS === "android" ? undefined : "position"}>
                 <ScrollView scrollEnabled={true} keyboardShouldPersistTaps="handled">
                     <View style={[styles.modalContent, { flex: 1 }]}>
-                        
+
                         <View style={styles.centeredView}>
 
                             <Modal
@@ -170,6 +163,7 @@ export default function Cate() {
                                 avoidKeyboard
                                 animationType="slide"
                                 transparent={true}
+
                                 visible={modalVisible}
                                 onRequestClose={() => {
                                     Alert.alert('Modal has been closed.');
@@ -245,7 +239,7 @@ export default function Cate() {
                                             onChangeText={handleChange('name')}
                                             value={values.name}
                                         />
-                                        <Text style={{ color: 'red' }}>{errors ? errors.name : ''}</Text>
+                                        <Text style={{ color: 'red' }}>{errors.name ? errors.name : ''}</Text>
 
 
                                         <TextInput
@@ -255,7 +249,7 @@ export default function Cate() {
                                             onChangeText={handleChange('age')}
                                             value={values.age}
                                         />
-                                        <Text style={{ color: 'red' }}>{errors ? errors.age : ''}</Text>
+                                        <Text style={{ color: 'red' }}>{errors.age ? errors.age : ''}</Text>
                                         <TextInput
                                             style={styles.input}
                                             placeholder='email'
@@ -263,7 +257,7 @@ export default function Cate() {
                                             onChangeText={handleChange('email')}
                                             value={values.email}
                                         />
-                                        <Text style={{ color: 'red' }}>{errors ? errors.email : ''}</Text>
+                                        <Text style={{ color: 'red' }}>{errors.email ? errors.email : ''}</Text>
                                         <TextInput
                                             style={styles.input}
                                             placeholder='mobile'
@@ -271,7 +265,7 @@ export default function Cate() {
                                             onChangeText={handleChange('mobile')}
                                             value={values.mobile}
                                         />
-                                        <Text style={{ color: 'red' }}>{errors ? errors.mobile : ''}</Text>
+                                        <Text style={{ color: 'red' }}>{errors.mobile ? errors.mobile : ''}</Text>
 
                                         <TextInput
                                             style={styles.input}
@@ -281,12 +275,12 @@ export default function Cate() {
                                             value={values.password}
 
                                         />
-                                        <Text style={{ color: 'red' }}>{errors ? errors.password : ''}</Text>
+                                        <Text style={{ color: 'red' }}>{errors.password ? errors.password : ''}</Text>
 
                                         <Pressable
                                             style={[styles.button, styles.buttonClose]}
                                             onPress={() => { handleSubmit(), handleSubmitdata() }}>
-                                            <Text style={styles.textStyle}>submite</Text>
+                                            <Text style={styles.textStyle}>{update ? "update" : "submite"}</Text>
                                         </Pressable>
                                     </View>
                                 </View>

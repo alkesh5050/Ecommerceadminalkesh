@@ -41,9 +41,9 @@ export default function Category() {
 
     } else {
       const Cat_data = await AsyncStorage.getItem("category");
-   if (Cat_data) {
-      setdata(JSON.parse(Cat_data));
-    }
+      if (Cat_data) {
+        setdata(JSON.parse(Cat_data));
+      }
     }
   }
 
