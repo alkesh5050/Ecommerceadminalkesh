@@ -45,11 +45,8 @@ export default function Category() {
       setdata(JSON.parse(Cat_data));
     }
     }
-
- 
-
   }
-  // console.log("ssssss", data);
+
 
   const handleSubmit = async (id) => {
     setModalVisible(false);
