@@ -55,9 +55,10 @@ export default function Cate() {
         },
         validationSchema: userSchema,
 
-        onSubmit: values => {
+        onSubmit: (values, {resetForm}) => {
             console.log(values);
             setModalVisible(!modalVisible)
+            resetForm();
 
         },
     });
@@ -86,29 +87,30 @@ export default function Cate() {
 
             const udata = JSON.parse(catData).map((v) => {
                 if (v.id === update) {
-                    return ({ id: update, name: values.name, age: values.age,email: values.email, mobile: values.mobile,password: values.password });
+                    return ({ id: update, name: values.name, age: values.age, email: values.email, mobile: values.mobile, password: values.password, check: values.check, Radio: values.Radio, dropDownPicker: values.dropDownPicker });
                 } else {
                     return v;
                 }
             })
 
             await AsyncStorage.setItem("category", JSON.stringify(udata));
-        
+
             setdata(udata);
 
         } else {
             if (catData) {
                 let asyncdata = JSON.parse(catData);
                 asyncdata.push({
-                    id: Math.floor(Math.random() * 10000), name: values.name, age: values.age,email: values.email, mobile: values.mobile,password: values.password
+                    id: Math.floor(Math.random() * 10000), name: values.name, age: values.age, email: values.email, mobile: values.mobile, password: values.password
+                    , check: values.check, Radio: values.Radio, dropDownPicker: values.dropDownPicker
                 })
                 await AsyncStorage.setItem("category", JSON.stringify(asyncdata));
                 setdata(asyncdata)
 
             } else {
                 let data = [{
-                    id: Math.floor(Math.random() * 10000),name: values.name, age: values.age,email: values.email, mobile: values.mobile,password: values.password
-
+                    id: Math.floor(Math.random() * 10000), name: values.name, age: values.age, email: values.email, mobile: values.mobile, password: values.password
+                    , check: values.check, Radio: values.Radio, dropDownPicker: values.dropDownPicker
                 }];
                 await AsyncStorage.setItem("category", JSON.stringify(data));
                 setdata(asyncdata)
@@ -139,10 +141,11 @@ export default function Cate() {
         setUpdate(data.id)
     }
 
-    const { handleSubmit, handleChange, errors, values, setFieldValue, setValues } = formik;
+    const { handleSubmit, handleChange, errors, values, setFieldValue, setValues, touched, handleBlur } = formik;
 
-    // console.log("errors",errors);
-    // console.log("check", errors.name);
+    console.log("errors",errors.name);
+    console.log("check", touched);
+    console.log("values", values.name);
 
     //dropdown
     //radio button
@@ -150,189 +153,191 @@ export default function Cate() {
 
     return (
 
-        <Modal
-            isVisible={modalVisible}>
-            <KeyboardAvoidingView enabled behavior={Platform.OS === "android" ? undefined : "position"}>
-                <ScrollView scrollEnabled={true} keyboardShouldPersistTaps="handled">
-                    <View style={[styles.modalContent, { flex: 1 }]}>
+        <View style={styles.centeredView}>
 
+            <Modal
+
+                avoidKeyboard
+                animationType="slide"
+                transparent={true}
+
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setModalVisible(!modalVisible);
+                }}>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={styles.keyboardAvoidingView}
+                >
+                    <ScrollView contentContainerStyle={styles.scrollView}>
                         <View style={styles.centeredView}>
 
-                            <Modal
+                            <View style={styles.modalView}>
 
-                                avoidKeyboard
-                                animationType="slide"
-                                transparent={true}
-
-                                visible={modalVisible}
-                                onRequestClose={() => {
-                                    Alert.alert('Modal has been closed.');
-                                    setModalVisible(!modalVisible);
-                                }}>
-                                <View style={styles.centeredView}>
-
-                                    <View style={styles.modalView}>
-
-                                        <View style={styles.checkboxContainer}>
-                                            <CheckBox
-                                                checked={isSelected}
-                                                onPress={() => { setSelection(!isSelected); setFieldValue("check", !isSelected) }}
-                                                onChangeText={handleChange('check')}
-                                                containerStyle={styles.checkbox}
-                                            />
-                                            <Text style={styles.label}>Do you like React Native?</Text>
-                                        </View>
-                                        <Text style={{ color: 'red' }}>{isSelected ? '' : errors.check}</Text>
-
-
-
-                                        <View style={styles.radioGroup}>
-                                            <View style={styles.radioButton}>
-                                                <RadioButton.Android
-                                                    value="option1"
-                                                    status={selectedValue === 'option1' ? 'checked' : 'unchecked'}
-                                                    onPress={() => { setSelectedValue('option1'); setFieldValue('Radio', 'ReactJS') }}
-                                                    color="#007BFF"
-                                                    onChangeText={handleChange('Radio')}
-                                                />
-                                                <Text style={styles.radioLabel}> ReactJS</Text>
-                                            </View>
-
-                                            <View style={styles.radioButton}>
-                                                <RadioButton.Android
-                                                    value="option2"
-                                                    status={selectedValue === 'option2' ? 'checked' : 'unchecked'}
-                                                    onPress={() => { setSelectedValue('option2'); setFieldValue('Radio', 'React Native') }}
-                                                    color="#007BFF"
-                                                    onChangeText={handleChange('Radio')}
-                                                />
-                                                <Text style={styles.radioLabel}>React Native</Text>
-                                            </View>
-
-
-                                        </View>
-                                        <Text style={{ color: 'red' }}>{selectedValue ? '' : errors.Radio}</Text>
-                                        <View style={styles.DropDown}>
-
-                                            <DropDownPicker
-
-                                                open={open}
-                                                value={value}
-                                                items={items}
-                                                setOpen={setOpen}
-                                                setValue={setValue}
-                                                setItems={setItems}
-                                                placeholder={'Category'}
-                                                onChangeText={handleChange('dropDownPicker')}
-                                                onPress={() => setDropDownPicker(!dropDownPicker)}
-                                                onSelectItem={(items) => setFieldValue('dropDownPicker', items.value)}
-                                            />
-                                            <Text style={{ color: 'red' }}>{dropDownPicker ? '' : errors.dropDownPicker}</Text>
-                                        </View>
-
-
-                                        <TextInput
-                                            style={styles.input}
-                                            color={'black'}
-                                            placeholder='name'
-                                            placeholderTextColor='#9B9B9B'
-                                            onChangeText={handleChange('name')}
-                                            value={values.name}
-                                        />
-                                        <Text style={{ color: 'red' }}>{errors.name ? errors.name : ''}</Text>
-
-
-                                        <TextInput
-                                            style={styles.input}
-                                            placeholder='age'
-                                            placeholderTextColor='#9B9B9B'
-                                            onChangeText={handleChange('age')}
-                                            value={values.age}
-                                        />
-                                        <Text style={{ color: 'red' }}>{errors.age ? errors.age : ''}</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            placeholder='email'
-                                            placeholderTextColor='#9B9B9B'
-                                            onChangeText={handleChange('email')}
-                                            value={values.email}
-                                        />
-                                        <Text style={{ color: 'red' }}>{errors.email ? errors.email : ''}</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            placeholder='mobile'
-                                            placeholderTextColor='#9B9B9B'
-                                            onChangeText={handleChange('mobile')}
-                                            value={values.mobile}
-                                        />
-                                        <Text style={{ color: 'red' }}>{errors.mobile ? errors.mobile : ''}</Text>
-
-                                        <TextInput
-                                            style={styles.input}
-                                            placeholder='password'
-                                            placeholderTextColor='#9B9B9B'
-                                            onChangeText={handleChange('password')}
-                                            value={values.password}
-
-                                        />
-                                        <Text style={{ color: 'red' }}>{errors.password ? errors.password : ''}</Text>
-
-                                        <Pressable
-                                            style={[styles.button, styles.buttonClose]}
-                                            onPress={() => { handleSubmit(), handleSubmitdata() }}>
-                                            <Text style={styles.textStyle}>{update ? "update" : "submite"}</Text>
-                                        </Pressable>
-                                    </View>
+                                <View style={styles.checkboxContainer}>
+                                    <CheckBox
+                                        checked={isSelected}
+                                        onPress={() => { setSelection(!isSelected); setFieldValue("check", !isSelected) }}
+                                        onChangeText={handleChange('check')}
+                                        containerStyle={styles.checkbox}
+                                    />
+                                    <Text style={styles.label}>Do you like React Native?</Text>
                                 </View>
-                            </Modal>
+                                <Text style={{ color: 'red' }}>{isSelected ? '' : errors.check}</Text>
 
 
-                            {
 
-                                data.map((v) => (
-                                    <View style={styles.Viewman}>
-                                        <Text style={{ color: 'black' }}>{v.name}</Text>
-                                        <Text style={{ color: 'black' }}>{v.age}</Text>
-                                        <View style={styles.iconview}>
-
-                                            <TouchableOpacity onPress={() => Editdata(v)}>
-                                                <FontAwesome name="pencil-square" size={25} color="green" />
-                                            </TouchableOpacity>
-
-                                            <TouchableOpacity onPress={() => handleDelete(v.id)}>
-                                                <FontAwesome name="trash" size={25} color="red" />
-                                            </TouchableOpacity>
-
-                                        </View>
-
+                                <View style={styles.radioGroup}>
+                                    <View style={styles.radioButton}>
+                                        <RadioButton.Android
+                                            value="option1"
+                                            status={selectedValue === 'option1' ? 'checked' : 'unchecked'}
+                                            onPress={() => { setSelectedValue('option1'); setFieldValue('Radio', 'ReactJS') }}
+                                            color="#007BFF"
+                                            onChangeText={handleChange('Radio')}
+                                        />
+                                        <Text style={styles.radioLabel}> ReactJS</Text>
                                     </View>
-                                ))
-                            }
+
+                                    <View style={styles.radioButton}>
+                                        <RadioButton.Android
+                                            value="option2"
+                                            status={selectedValue === 'option2' ? 'checked' : 'unchecked'}
+                                            onPress={() => { setSelectedValue('option2'); setFieldValue('Radio', 'React Native') }}
+                                            color="#007BFF"
+                                            onChangeText={handleChange('Radio')}
+                                        />
+                                        <Text style={styles.radioLabel}>React Native</Text>
+                                    </View>
 
 
+                                </View>
+                                <Text style={{ color: 'red' }}>{selectedValue ? '' : errors.Radio}</Text>
+                                <View style={styles.DropDown}>
 
-                            <Pressable
-                                style={[styles.button, styles.buttonOpen]}
-                                onPress={() => setModalVisible(true)}>
-                                <Text style={styles.textStyle}>Show Modal</Text>
-                            </Pressable>
+                                    <DropDownPicker
+
+                                        open={open}
+                                        value={value}
+                                        items={items}
+                                        setOpen={setOpen}
+                                        setValue={setValue}
+                                        setItems={setItems}
+                                        placeholder={'Category'}
+                                        onChangeText={handleChange('dropDownPicker')}
+                                        onPress={() => setDropDownPicker(!dropDownPicker)}
+                                        onSelectItem={(items) => setFieldValue('dropDownPicker', items.value)}
+                                    />
+                                    <Text style={{ color: 'red' }}>{dropDownPicker ? '' : errors.dropDownPicker}</Text>
+                                </View>
+
+
+                                <TextInput
+                                name="name"
+                                    style={styles.input}
+                                    color={'black'}
+                                    placeholder='name'
+                                    placeholderTextColor='#9B9B9B'
+                                    onChangeText={handleChange('name')}
+                                    onBlur={handleBlur("name")}
+                                    value={values.name}
+                                />
+                                <Text style={{ color: 'red' }}>{errors.name && touched.name ? errors.name : ''}</Text>
+
+
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='age'
+                                    placeholderTextColor='#9B9B9B'
+                                    onBlur={handleBlur("age")}
+                                    onChangeText={handleChange('age')}
+                                    value={values.age}
+                                />
+                                <Text style={{ color: 'red' }}>{errors.age && touched.age ? errors.age : ''}</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='email'
+                                    placeholderTextColor='#9B9B9B'
+                                    onBlur={handleBlur("email")}
+                                    onChangeText={handleChange('email')}
+                                    value={values.email}
+                                />
+                                <Text style={{ color: 'red' }}>{errors.email && touched.email  ? errors.email : ''}</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='mobile'
+                                    placeholderTextColor='#9B9B9B'
+                                    onBlur={handleBlur("mobile")}
+                                    onChangeText={handleChange('mobile')}
+                                    value={values.mobile}
+                                />
+                                <Text style={{ color: 'red' }}>{errors.mobile && touched.mobile  ? errors.mobile : ''}</Text>
+
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='password'
+                                    placeholderTextColor='#9B9B9B'
+                                    onBlur={handleBlur("password")}
+                                    onChangeText={handleChange('password')}
+                                    value={values.password}
+
+                                />
+                                <Text style={{ color: 'red' }}>{errors.password && touched.password  ? errors.password : ''}</Text>
+
+                                <Pressable
+                                    style={[styles.button, styles.buttonClose]}
+                                    onPress={() => { handleSubmit(), handleSubmitdata() }}>
+                                    <Text style={styles.textStyle}>{update ? "update" : "submite"}</Text>
+                                </Pressable>
+                            </View>
 
                         </View>
-                    </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
+            </Modal>
 
-        </Modal>
+
+            {
+
+                data.map((v) => (
+                    <View style={styles.Viewman}>
+                        <Text style={{ color: 'black' }}>{v.name}</Text>
+                        <Text style={{ color: 'black' }}>{v.age}</Text>
+                        <View style={styles.iconview}>
+
+                            <TouchableOpacity onPress={() => Editdata(v)}>
+                                <FontAwesome name="pencil-square" size={25} color="green" />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => handleDelete(v.id)}>
+                                <FontAwesome name="trash" size={25} color="red" />
+                            </TouchableOpacity>
+
+                        </View>
+
+                    </View>
+                ))
+            }
+
+
+
+            <Pressable
+                style={[styles.button, styles.buttonOpen]}
+                onPress={() => setModalVisible(true)}>
+                <Text style={styles.textStyle}>Open Modal</Text>
+            </Pressable>
+
+        </View>
+
     )
 }
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
+  
     centeredView: {
-        flex: 1,
+        // flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 22,
@@ -385,10 +390,10 @@ const styles = StyleSheet.create({
 
     },
     buttonOpen: {
-        backgroundColor: '#F194FF',
+        backgroundColor: '#007BFF',
     },
     buttonClose: {
-        backgroundColor: '#2196F3',
+        backgroundColor: '#007BFF',
     },
     textStyle: {
         color: 'white',

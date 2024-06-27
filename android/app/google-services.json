@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "833775339424",
+    "project_id": "ecommerceadminalkesh",
+    "storage_bucket": "ecommerceadminalkesh.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833775339424:android:cdfa100a904876ef7386c5",
+        "android_client_info": {
+          "package_name": "com.ecommerceadminalkesh"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZmRsGWP-09KxfwmkhDS7iMbjEv__txK4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
