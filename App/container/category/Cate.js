@@ -67,7 +67,7 @@ export default function Cate() {
     }, []);
 
 
-    const getdata = async () => {
+    const getdata = async () => { 
 
         const catData = await AsyncStorage.getItem("category");
         if (catData) {
