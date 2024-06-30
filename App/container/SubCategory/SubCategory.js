@@ -14,47 +14,76 @@ export default function SubCategory() {
   const [modalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState('');
   const [data, setdata] = useState([]);
+  const [data2, setdata2] = useState([]);
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    // { label: 'shirts for men', value: 'shirts for men' },
-    // { label: 'shirt for women', value: 'shirt for women' },
-    // { label: 'women shoes', value: 'women shoes' },
-  ]);
+  const [items, setItems] = useState(null);
+  const [items2, setItems2] = useState(null);
+
   useEffect(() => {
     getdata();
-}, []);
+  }, []);
+  useEffect(() => {
+    Subgetdata();
+  }, []);
+
+  const getdata = async () => {
+    const Categorydata = [];
+
+    const users = await firestore()
+
+      .collection('category2')
+      .get()
+      .then(querySnapshot => {
+        // console.log('Total users: ', querySnapshot.size);
+
+        querySnapshot.forEach(documentSnapshot => {
+          // console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
+          Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
+
+        });
+      });
+    setdata(Categorydata)
+    // console.log("setItems",data);
+    // console.log("setItems", data);
+    setItems(Categorydata.map(v => ({ label: v.name, value: v.name })))
+    // console.log("setItemssssss", value);
+
+  }
 
 
-const getdata = async () => {
-  const Categorydata = [];
+  const Subgetdata = async () => {
+    const Categorydata2 = [];
 
-        const users = await firestore()
+    const users = await firestore()
 
-            .collection('category2')
-            .get()
-            .then(querySnapshot => {
-                console.log('Total users: ', querySnapshot.size);
+      .collection('SubCategory')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(documentSnapshot => {
+   
+          Categorydata2.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
 
-                querySnapshot.forEach(documentSnapshot => {
-                    console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
-                    Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
+        });
+      });
+    setdata2(Categorydata2)
+ 
+    setItems2(Categorydata2.map(v => ({ label: v.name, value: v.name })))
+    console.log("setItems2", Categorydata2);
 
-                });
-            });
-        setdata(Categorydata)
-      // console.log("setItems",data);
-      console.log("setItems",data);
-      setItems(Categorydata.map(v =>({label: v.name, value: v.name})))
-    
-}
-
+  }
   const handleSubmit1 = async (data) => {
-    console.log("ffffffffffffff", data);
+    console.log("fffffffffffff", value);
+    
+    const subCategoryData = {
+      ...data,
+      category: value
+    };
+    
     await firestore()
       .collection('SubCategory')
-      .add(data)
+      .add(subCategoryData)
       .then(() => {
         console.log('SubCategory added!');
       })
@@ -63,7 +92,7 @@ const getdata = async () => {
       })
 
     setModalVisible(false);
-
+    Subgetdata();
   }
 
   let userSchema = object({
@@ -77,7 +106,7 @@ const getdata = async () => {
       name: '',
     },
     validationSchema: userSchema,
-    onSubmit: (values,{resetForm}) => {
+    onSubmit: (values, { resetForm }) => {
       //   alert(JSON.stringify(values, null, 2));
       //  console.log("valis",values);
       handleSubmit1(values);
@@ -85,7 +114,6 @@ const getdata = async () => {
 
     },
   });
-console.log( "setItemssssss",setValue);
 
   const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues } = formik;
 
@@ -102,28 +130,26 @@ console.log( "setItemssssss",setValue);
       </View>
       <View style={styles.container}>
 
+      {
+                        data2.map((v, i) => (
+                            <View style={styles.Viewman}>
+                                <Text style={{ color: 'black' }}>{v.category}</Text>
+                                <Text style={{ color: 'black' }}>{v.name}</Text>
+                                <View style={styles.iconview}>
 
-        <View style={styles.manProduct}>
-          <View style={styles.Viewman}>
-            <Text style={{ color: 'black' }}>men</Text>
-            <View style={styles.iconview}>
-              <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
-              <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
+                                    {/* <TouchableOpacity onPress={() => Editdata(v)}>
+                                        <FontAwesome name="pencil-square" size={25} color="green" />
+                                    </TouchableOpacity>
 
-            </View>
+                                    <TouchableOpacity onPress={() => handleDeleteData(v.id)}>
+                                        <FontAwesome name="trash" size={25} color="red" />
+                                    </TouchableOpacity> */}
 
-          </View>
-          <View style={styles.Viewman}>
-            <Text style={{ color: 'black', }}>Women</Text>
-            <View style={styles.iconview}>
-              <TouchableOpacity><FontAwesome name="pencil-square" size={25} color="green" /></TouchableOpacity>
-              <TouchableOpacity><FontAwesome name="trash" size={25} color="red" /></TouchableOpacity>
+                                </View>
 
-            </View>
-
-          </View>
-
-        </View>
+                            </View>
+                        ))
+                    }
 
         <Modal
           // animationType="slide"
@@ -145,7 +171,7 @@ console.log( "setItemssssss",setValue);
                   setValue={setValue}
                   setItems={setItems}
                   placeholder={'Category'}
- 
+
                 />
               </View>
               <TextInput
