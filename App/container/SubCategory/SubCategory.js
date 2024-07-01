@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -15,18 +15,17 @@ export default function SubCategory() {
   const [name, setName] = useState('');
   const [data, setdata] = useState([]);
   const [data2, setdata2] = useState([]);
-
+  const [dropDownPicker, setDropDownPicker] = useState('');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState(null);
   const [items2, setItems2] = useState(null);
+  const [update, setUpdate] = useState(null);
 
   useEffect(() => {
     getdata();
   }, []);
-  useEffect(() => {
-    Subgetdata();
-  }, []);
+
 
   const getdata = async () => {
     const Categorydata = [];
@@ -62,60 +61,100 @@ export default function SubCategory() {
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(documentSnapshot => {
-   
+
           Categorydata2.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
 
         });
       });
     setdata2(Categorydata2)
- 
+
     setItems2(Categorydata2.map(v => ({ label: v.name, value: v.name })))
     console.log("setItems2", Categorydata2);
 
   }
+
   const handleSubmit1 = async (data) => {
-    console.log("fffffffffffff", value);
-    
-    const subCategoryData = {
-      ...data,
-      category: value
-    };
-    
-    await firestore()
-      .collection('SubCategory')
-      .add(subCategoryData)
-      .then(() => {
-        console.log('SubCategory added!');
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+    // console.log("fffffffffffff", value);
+
+
+    if (update) {
+      console.log("updet", update);
+      firestore()
+        .collection('SubCategory')
+        .doc(update)
+        .set(data)
+        .then(() => {
+          console.log('Updat added!');
+        });
+    } else {
+      const subCategoryData = {
+        ...data,
+        category: value
+      };
+
+      await firestore()
+        .collection('SubCategory')
+        .add(subCategoryData)
+        .then(() => {
+          console.log('SubCategory added!');
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    }
+
 
     setModalVisible(false);
     Subgetdata();
   }
 
+  const Editdata = (data) => {
+
+    console.log("edite", data);
+    setModalVisible(true);
+    setValues(data);
+    setUpdate(data.id)
+
+  }
+
+  const handleDeleteData = async (id) => {
+
+    console.log("eeeeeeee", id);
+    await firestore()
+      .collection('SubCategory')
+      .doc(id)
+      .delete()
+      .then(() => {
+        console.log('User deleted!');
+      });
+
+    Subgetdata();
+  }
+
+
+
   let userSchema = object({
     name: string().required(),
-
+    dropDownPicker:string().required(),
   });
 
 
   const formik = useFormik({
     initialValues: {
       name: '',
+      dropDownPicker:''
     },
     validationSchema: userSchema,
     onSubmit: (values, { resetForm }) => {
       //   alert(JSON.stringify(values, null, 2));
-      //  console.log("valis",values);
+      console.log("valis", values);
       handleSubmit1(values);
       resetForm();
-
+      // Subgetdata();
     },
   });
 
-  const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues } = formik;
+  const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues, resetForm,setFieldValue } = formik;
 
   return (
     <ScrollView>
@@ -123,78 +162,99 @@ export default function SubCategory() {
       <View style={styles.div}>
         <TouchableOpacity
           style={styles.Opacity}
-          onPress={() => setModalVisible(true)}
+          onPress={() => { setModalVisible(true); resetForm() }}
         >
-          <Text style={styles.Opacitytext}>Add Category</Text>
+          <Text style={styles.Opacitytext}>SubCategory</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
+        <View style={styles.manProduct}>
+          {
+            data2.map((v, i) => (
+              <View style={styles.Viewman}>
+                <Text style={{ color: 'black' }}>{v.category}</Text>
+                <Text style={{ color: 'black' }}>{v.name}</Text>
+                <View style={styles.iconview}>
 
-      {
-                        data2.map((v, i) => (
-                            <View style={styles.Viewman}>
-                                <Text style={{ color: 'black' }}>{v.category}</Text>
-                                <Text style={{ color: 'black' }}>{v.name}</Text>
-                                <View style={styles.iconview}>
+                  <TouchableOpacity onPress={() => Editdata(v)}>
+                    <FontAwesome name="pencil-square" size={25} color="green" />
+                  </TouchableOpacity>
 
-                                    {/* <TouchableOpacity onPress={() => Editdata(v)}>
-                                        <FontAwesome name="pencil-square" size={25} color="green" />
-                                    </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleDeleteData(v.id)}>
+                    <FontAwesome name="trash" size={25} color="red" />
+                  </TouchableOpacity>
 
-                                    <TouchableOpacity onPress={() => handleDeleteData(v.id)}>
-                                        <FontAwesome name="trash" size={25} color="red" />
-                                    </TouchableOpacity> */}
+                </View>
 
-                                </View>
-
-                            </View>
-                        ))
-                    }
+              </View>
+            ))
+          }
+        </View>
 
         <Modal
-          // animationType="slide"
-          // transparent={true}
+          animationType="slide"
+          transparent={true}
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
+        // onBackdropPress={() => this.setModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.container}
+            activeOpacity={1}
+            onPressOut={() => { setModalVisible(false); resetForm() }}
+          >
+            <ScrollView
+              directionalLockEnabled={true}
+              contentContainerStyle={styles.scrollModal}
+            >
+              <TouchableWithoutFeedback>
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalOverlay}>
 
-            <View style={styles.modalContent}>
-              <Text style={styles.modalText}>category</Text>
-              <View style={styles.DropDown}>
-                <DropDownPicker
+                    <View style={styles.modalContent}>
+                      <Text style={styles.modalText}>category</Text>
+                      <View style={styles.DropDown}>
+                        <DropDownPicker
 
-                  open={open}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  placeholder={'Category'}
+                          open={open}
+                          value={value}
+                          items={items}
+                          setOpen={setOpen}
+                          setValue={setValue}
+                          setItems={setItems}
+                          placeholder={'Category'}
+                          onChangeText={handleChange('dropDownPicker')}
+                          onPress={() => setDropDownPicker(!dropDownPicker)}
+                          onSelectItem={(items) => setFieldValue('dropDownPicker', items.value)}
+                        />
+                        <Text style={{ color: 'red' }}>{dropDownPicker ? '' : errors.dropDownPicker}</Text>
+                      </View>
+                      <TextInput
+                        style={styles.input}
 
-                />
-              </View>
-              <TextInput
-                style={styles.input}
-
-                placeholder='Category Name'
-                placeholderTextColor='#9B9B9B'
-                onChangeText={handleChange('name')}
-                onBlur={handleBlur('name')}
-                value={values.name}
-              />
-              <Text style={{ color: 'red' }}>{errors.name && touched.name ? errors.name : ''}</Text>
+                        placeholder='Category Name'
+                        placeholderTextColor='#9B9B9B'
+                        onChangeText={handleChange('name')}
+                        onBlur={handleBlur('name')}
+                        value={values.name}
+                      />
+                      <Text style={{ color: 'red' }}>{errors.name && touched.name ? errors.name : ''}</Text>
 
 
 
-              <TouchableOpacity
-                style={styles.button1}
-                onPress={() => (setModalVisible(false), handleSubmit())}
-              >
-                <Text style={styles.buttonText}>Submit</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+                      <TouchableOpacity
+                        style={styles.button1}
+                        onPress={() => (setModalVisible(false), handleSubmit())}
+                      >
+                        <Text style={styles.buttonText}>{update ? "update" : "submite"}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </ScrollView>
+          </TouchableOpacity>
+
         </Modal>
       </View>
     </ScrollView>
@@ -275,7 +335,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: moderateScale(10),
     alignItems: 'center',
-
+  
   },
   modalText: {
     color: 'black',
@@ -310,5 +370,10 @@ const styles = StyleSheet.create({
   Opacitytext: {
     color: 'white',
     fontSize: moderateScale(16),
-  }
+  },
+  modalContainer:{
+
+    paddingTop: horizontalScale(200),
+  },
+  
 });
