@@ -12,27 +12,56 @@ import { object, string } from 'yup';
 
 export default function SubCategory() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [name, setName] = useState('');
-  const [data, setdata] = useState([]);
   const [data2, setdata2] = useState([]);
   const [dropDownPicker, setDropDownPicker] = useState('');
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState(null);
-  const [items2, setItems2] = useState(null);
+  const [value, setValue] = useState([]);
+  const [items, setItems] = useState([]);
+  const [items2, setItems2] = useState([]);
   const [update, setUpdate] = useState(null);
+  const [category, setCaegory] = useState([])
 
   useEffect(() => {
-    getdata();
+    // getdata();
+    Subgetdata();
   }, []);
+  // useEffect(() => {
+  //   Subgetdata();
+  // }, []);
+
+  // const getdata = async () => {
+  //   // const Categorydata = [];
+
+  //   // const users = await firestore()
+
+  //   //   .collection('category2')
+
+  //   //   .get()
+  //   //   .then(querySnapshot => {
+  //   //     // console.log('Total users: ', querySnapshot.size);
+
+  //   //     querySnapshot.forEach(documentSnapshot => {
+  //   //       // console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
+  //   //       Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
+
+  //   //     });
+  //   //   });
+  //   // setdata(Categorydata)
+  //   // console.log("setItems",Categorydata.id);
+  //   // console.log("setItems", data);
+  //   // setItems(Categorydata.map(v => ({ label: v.name, value: v.name })))
+  //   // console.log("setItemssssss", value);
+
+  // }
 
 
-  const getdata = async () => {
+  const Subgetdata = async () => {
     const Categorydata = [];
 
-    const users = await firestore()
+       await firestore()
 
       .collection('category2')
+
       .get()
       .then(querySnapshot => {
         // console.log('Total users: ', querySnapshot.size);
@@ -43,42 +72,38 @@ export default function SubCategory() {
 
         });
       });
-    setdata(Categorydata)
-    // console.log("setItems",data);
-    // console.log("setItems", data);
-    setItems(Categorydata.map(v => ({ label: v.name, value: v.name })))
-    // console.log("setItemssssss", value);
 
-  }
+      setCaegory(Categorydata)
+    const SubCategorydata = [];
 
-
-  const Subgetdata = async () => {
-    const Categorydata2 = [];
-
-    const users = await firestore()
+     await firestore()
 
       .collection('SubCategory')
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(documentSnapshot => {
 
-          Categorydata2.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
+          SubCategorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
 
         });
       });
-    setdata2(Categorydata2)
 
-    setItems2(Categorydata2.map(v => ({ label: v.name, value: v.name })))
-    console.log("setItems2", Categorydata2);
 
+    setdata2(SubCategorydata)
+    setItems(Categorydata.map(v => ({ label: v.name, value: v.id })))
+  
   }
 
   const handleSubmit1 = async (data) => {
     // console.log("fffffffffffff", value);
 
+    // const subCategoryData = {
+    //   ...data,
+    //   category: value
+    // };
 
     if (update) {
-      console.log("updet", update);
+      // console.log("updet", update);
       firestore()
         .collection('SubCategory')
         .doc(update)
@@ -87,14 +112,10 @@ export default function SubCategory() {
           console.log('Updat added!');
         });
     } else {
-      const subCategoryData = {
-        ...data,
-        category: value
-      };
 
       await firestore()
         .collection('SubCategory')
-        .add(subCategoryData)
+        .add(data)
         .then(() => {
           console.log('SubCategory added!');
         })
@@ -156,13 +177,19 @@ export default function SubCategory() {
 
   const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues, resetForm,setFieldValue } = formik;
 
+
+  // data2.map((v, i) => {
+  //   const a = category.find((v1) => v.dropDownPicker === v1.id);
+  //   console.log("sssssssssssssss",a);
+  // })
+
   return (
     <ScrollView>
 
       <View style={styles.div}>
         <TouchableOpacity
           style={styles.Opacity}
-          onPress={() => { setModalVisible(true); resetForm() }}
+          onPress={() => { setModalVisible(true); resetForm(),setUpdate(null) }}
         >
           <Text style={styles.Opacitytext}>SubCategory</Text>
         </TouchableOpacity>
@@ -171,8 +198,8 @@ export default function SubCategory() {
         <View style={styles.manProduct}>
           {
             data2.map((v, i) => (
-              <View style={styles.Viewman}>
-                <Text style={{ color: 'black' }}>{v.category}</Text>
+              <View key={i} style={styles.Viewman}>
+                <Text style={{ color: 'black' }}>{ category.find((v1) => v.dropDownPicker === v1.id)?.name }</Text>
                 <Text style={{ color: 'black' }}>{v.name}</Text>
                 <View style={styles.iconview}>
 
@@ -192,8 +219,8 @@ export default function SubCategory() {
         </View>
 
         <Modal
-          animationType="slide"
-          transparent={true}
+          // animationType="slide"
+          // transparent={true}
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
         // onBackdropPress={() => this.setModalVisible(false)}
@@ -227,7 +254,7 @@ export default function SubCategory() {
                           onPress={() => setDropDownPicker(!dropDownPicker)}
                           onSelectItem={(items) => setFieldValue('dropDownPicker', items.value)}
                         />
-                        <Text style={{ color: 'red' }}>{dropDownPicker ? '' : errors.dropDownPicker}</Text>
+                        <Text style={{ color: 'red' }}>{dropDownPicker&&touched.dropDownPicker ? '' : errors.dropDownPicker}</Text>
                       </View>
                       <TextInput
                         style={styles.input}
@@ -244,7 +271,7 @@ export default function SubCategory() {
 
                       <TouchableOpacity
                         style={styles.button1}
-                        onPress={() => (setModalVisible(false), handleSubmit())}
+                        onPress={handleSubmit}
                       >
                         <Text style={styles.buttonText}>{update ? "update" : "submite"}</Text>
                       </TouchableOpacity>
@@ -333,9 +360,10 @@ const styles = StyleSheet.create({
     width: horizontalScale(300),
     padding: horizontalScale(20),
     backgroundColor: 'white',
-    borderRadius: moderateScale(10),
+    borderRadius: moderateScale(5),
+    elevation:4,
     alignItems: 'center',
-  
+    borderWidth: 1,
   },
   modalText: {
     color: 'black',
