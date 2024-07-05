@@ -19,40 +19,13 @@ export default function SubCategory() {
   const [items, setItems] = useState([]);
   const [items2, setItems2] = useState([]);
   const [update, setUpdate] = useState(null);
-  const [category, setCaegory] = useState([])
+  const [category, setCategory] = useState([])
 
   useEffect(() => {
-    // getdata();
+
     Subgetdata();
   }, []);
-  // useEffect(() => {
-  //   Subgetdata();
-  // }, []);
 
-  // const getdata = async () => {
-  //   // const Categorydata = [];
-
-  //   // const users = await firestore()
-
-  //   //   .collection('category2')
-
-  //   //   .get()
-  //   //   .then(querySnapshot => {
-  //   //     // console.log('Total users: ', querySnapshot.size);
-
-  //   //     querySnapshot.forEach(documentSnapshot => {
-  //   //       // console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
-  //   //       Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
-
-  //   //     });
-  //   //   });
-  //   // setdata(Categorydata)
-  //   // console.log("setItems",Categorydata.id);
-  //   // console.log("setItems", data);
-  //   // setItems(Categorydata.map(v => ({ label: v.name, value: v.name })))
-  //   // console.log("setItemssssss", value);
-
-  // }
 
 
   const Subgetdata = async () => {
@@ -73,7 +46,7 @@ export default function SubCategory() {
         });
       });
 
-      setCaegory(Categorydata)
+      setCategory(Categorydata)
     const SubCategorydata = [];
 
      await firestore()
@@ -156,14 +129,14 @@ export default function SubCategory() {
 
   let userSchema = object({
     name: string().required(),
-    dropDownPicker:string().required(),
+    category_id:string().required(),
   });
 
 
   const formik = useFormik({
     initialValues: {
       name: '',
-      dropDownPicker:''
+      category_id:''
     },
     validationSchema: userSchema,
     onSubmit: (values, { resetForm }) => {
@@ -199,7 +172,7 @@ export default function SubCategory() {
           {
             data2.map((v, i) => (
               <View key={i} style={styles.Viewman}>
-                <Text style={{ color: 'black' }}>{ category.find((v1) => v.dropDownPicker === v1.id)?.name }</Text>
+                <Text style={{ color: 'black' }}>{ category.find((v1) => v.category_id === v1.id)?.name }</Text>
                 <Text style={{ color: 'black' }}>{v.name}</Text>
                 <View style={styles.iconview}>
 
@@ -250,11 +223,11 @@ export default function SubCategory() {
                           setValue={setValue}
                           setItems={setItems}
                           placeholder={'Category'}
-                          onChangeText={handleChange('dropDownPicker')}
+                          onChangeText={handleChange('category_id')}
                           onPress={() => setDropDownPicker(!dropDownPicker)}
-                          onSelectItem={(items) => setFieldValue('dropDownPicker', items.value)}
+                          onSelectItem={(items) => setFieldValue('category_id', items.value)}
                         />
-                        <Text style={{ color: 'red' }}>{dropDownPicker&&touched.dropDownPicker ? '' : errors.dropDownPicker}</Text>
+                        <Text style={{ color: 'red' }}>{dropDownPicker&&touched.category_id ? '' : errors.category_id}</Text>
                       </View>
                       <TextInput
                         style={styles.input}
