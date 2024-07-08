@@ -133,7 +133,7 @@ export default function Product() {
   let userSchema = object({
     category_id: string().required(),
     Subcategory_id: string().required(),
-    Product_name: string().required(),
+    Product_name: string().required("enter name").matches(/^[a-zA-Z ]+$/, "enter valid name"),
     Price: string().required(),
     Discretion: string().required(),
   });
@@ -148,7 +148,7 @@ export default function Product() {
     },
     validationSchema: userSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log("values", values);
+      // console.log("values", values);
       handleSubmit1(values);
       resetForm();
 

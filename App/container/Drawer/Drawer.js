@@ -21,6 +21,7 @@ export default function () {
       <Drawer.Screen name="cate" component={Cate} />
       <Drawer.Screen name="FierCategory" component={FierCategory} />
       <Drawer.Screen name="cateF" component={CategoryF} />
+    
     </Drawer.Navigator>
   )
 }
