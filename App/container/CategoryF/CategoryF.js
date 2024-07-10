@@ -10,6 +10,8 @@ import NetInfo from "@react-native-community/netinfo";
 import { object, string, number, date, InferType } from 'yup';
 import { useFormik } from 'formik';
 import firestore from '@react-native-firebase/firestore';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCategory, deleteCategory, getCategory } from '../../redux/action/category.action';
 
 export default function CategoryF() {
     const [modalVisible, setModalVisible] = useState(false);
@@ -22,20 +24,14 @@ export default function CategoryF() {
         getdata();
     }, []);
 
+    const dispatch = useDispatch();
+    const category = useSelector(state => state.category);
+
+    console.log("ssssssssss", category.categories);
 
     const getdata = async () => {
-        const category = await firestore()
-            .collection('Category')
-            .get()
-            .then(querySnapshot => {
-                console.log('Total users: ', querySnapshot.size);
-            
-                querySnapshot.forEach(documentSnapshot => {
-                  console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
-                  console.log({id: documentSnapshot.id, ...documentSnapshot.data()});
-                });
-              });
-
+        
+        dispatch(getCategory())
         console.log("wwwwwwwwwwwwww",category);
 
     }
@@ -43,26 +39,21 @@ export default function CategoryF() {
 
     const handleSubmit1 = async (data) => {
         console.log("ffffffffffffff", data);
-        await firestore()
-            .collection('Category')
-            .add(data)
-            .then(() => {
-                console.log('Category added!');
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+        dispatch(addCategory(data));
 
         setModalVisible(false);
     }
 
 
     const handleDeleteData = async (id) => {
-
+        dispatch(deleteCategory(id))
     }
 
-    const Editdata = async (id) => {
+    const Editdata = async (data) => {
+        setModalVisible(true);
 
+        setValues(data)
+        setUpdate(data.id)
     }
 
     let catSchema = object({
@@ -79,7 +70,7 @@ export default function CategoryF() {
         },
     });
 
-    const { handleBlur, handleChange, handleSubmit, errors, values, touched } = formik;
+    const { handleBlur, handleChange, handleSubmit, errors, values, touched,setValues } = formik;
 
     console.log("errors", errors);
     console.log("values", values);
@@ -100,12 +91,12 @@ export default function CategoryF() {
                 <View style={styles.manProduct}>
 
                     {
-                        data.map((v, i) => (
+                        category.categories.map((v, i) => (
                             <View key={v.id} style={styles.Viewman}>
                                 <Text style={{ color: 'black' }}>{v.name}</Text>
                                 <View style={styles.iconview}>
 
-                                    <TouchableOpacity onPress={() => Editdata(v.id)}>
+                                    <TouchableOpacity onPress={() => Editdata(v)}>
                                         <FontAwesome name="pencil-square" size={25} color="green" />
                                     </TouchableOpacity>
 

@@ -14,10 +14,10 @@ export default function App() {
   return (
     <Provider store={store}>  
     {/* 9 */}
-     {/* <NavigationContainer>
+     <NavigationContainer>
        <Drawer/>
-     </NavigationContainer> */}
-   <Counter/>
+     </NavigationContainer>
+   {/* <Counter/> */}
     </Provider>
   )
 }

@@ -11,6 +11,8 @@ import { object, string, number, date, InferType } from 'yup';
 import { useFormik } from 'formik';
 import firestore from '@react-native-firebase/firestore';
 import Category from './Category';
+import { useDispatch, useSelector } from 'react-redux';
+import { addcategorydata, deletefiercategory, editfiercategory, getcategorydata } from '../../redux/action/fiercategory.action';
 
 export default function FierCategory() {
     const [modalVisible, setModalVisible] = useState(false);
@@ -23,35 +25,20 @@ export default function FierCategory() {
         getdata();
     }, []);
 
+    const dispatch = useDispatch()
+    const category = useSelector(state => state.fiercategory)
+    console.log("ssssppppppppppppppppps", category.categories);
 
     const getdata = async () => {
-        const Categorydata = [];
 
-        const users = await firestore()
-
-            .collection('category2')
-            .get()
-            .then(querySnapshot => {
-                console.log('Total users: ', querySnapshot.size);
-
-                querySnapshot.forEach(documentSnapshot => {
-                    console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
-                    Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
-
-                });
-            });
-        setdata(Categorydata)
+        dispatch(getcategorydata())
+        // setdata(Categorydata)
     }
 
     const handleDeleteData = async (id) => {
-        console.log("eeeeeeee", id);
-        await firestore()
-            .collection('category2')
-            .doc(id)
-            .delete()
-            .then(() => {
-                console.log('User deleted!');
-            });
+        // console.log("eeeeeeee", id);
+     
+        dispatch(deletefiercategory(id))
         getdata();
     }
 
@@ -70,15 +57,7 @@ export default function FierCategory() {
                 });
 
         } else {
-            await firestore()
-                .collection('category2')
-                .add(data)
-                .then(() => {
-                    console.log('category2 add');
-                })
-                .catch((errors) => {
-                    console.log(errors);
-                })
+          dispatch(addcategorydata(data));
         }
 
         setModalVisible(false);
@@ -92,12 +71,10 @@ export default function FierCategory() {
     const Editdata = async (data) => {
 
         setModalVisible(true);
-
+       
         setValues(data)
         setUpdate(data.id)
-        // console.log("id data", data.id);
-        // getdata();
-
+    
     }
 
     let userSchema = object({
@@ -117,14 +94,14 @@ export default function FierCategory() {
     });
 
 
-    const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues } = formik;
+    const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues ,resetForm} = formik;
     return (
         <ScrollView>
 
             <View style={styles.div}>
                 <TouchableOpacity
                     style={styles.Opacity}
-                    onPress={() => setModalVisible(true)}
+                    onPress={() => (setModalVisible(true),setUpdate(null),resetForm())}
                 >
                     <Text style={styles.Opacitytext}>Add Category</Text>
                 </TouchableOpacity>
@@ -135,7 +112,7 @@ export default function FierCategory() {
                 <View style={styles.manProduct}>
 
                     {
-                        data.map((v, i) => (
+                        category.categories.map((v, i) => (
                             <View style={styles.Viewman}>
                                 <Text style={{ color: 'black' }}>{v.name}</Text>
                                 <View style={styles.iconview}>
