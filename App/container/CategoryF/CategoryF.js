@@ -11,7 +11,7 @@ import { object, string, number, date, InferType } from 'yup';
 import { useFormik } from 'formik';
 import firestore from '@react-native-firebase/firestore';
 import { useDispatch, useSelector } from 'react-redux';
-import { addCategory, deleteCategory, getCategory } from '../../redux/action/category.action';
+import { addCategory, deleteCategory, getCategory, updateCategory } from '../../redux/action/category.action';
 
 export default function CategoryF() {
     const [modalVisible, setModalVisible] = useState(false);
@@ -41,7 +41,7 @@ export default function CategoryF() {
         console.log("ffffffffffffff", data);
         dispatch(addCategory(data));
 
-        setModalVisible(false);
+        
     }
 
 
@@ -60,13 +60,26 @@ export default function CategoryF() {
         name: string().required()
     });
 
+    const handleUpdateData = (data) => {
+        dispatch(updateCategory(data))
+
+        setUpdate(null);
+    }
+
     const formik = useFormik({
         initialValues: {
             name: ''
         },
         validationSchema: catSchema,
-        onSubmit: values => {
-            handleSubmit1(values)
+        onSubmit: (values, {resetForm}) => {
+            if (update) {
+                handleUpdateData(values)
+            } else {
+                handleSubmit1(values)
+            }
+            
+            resetForm();
+            setModalVisible(false);
         },
     });
 
@@ -92,7 +105,7 @@ export default function CategoryF() {
 
                     {
                         category.categories.map((v, i) => (
-                            <View key={v.id} style={styles.Viewman}>
+                            <View key={i} style={styles.Viewman}>
                                 <Text style={{ color: 'black' }}>{v.name}</Text>
                                 <View style={styles.iconview}>
 

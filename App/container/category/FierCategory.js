@@ -27,7 +27,7 @@ export default function FierCategory() {
 
     const dispatch = useDispatch()
     const category = useSelector(state => state.fiercategory)
-    console.log("ssssppppppppppppppppps", category.categories);
+    // console.log("ssssppppppppppppppppps", category.categories);
 
     const getdata = async () => {
 
@@ -44,17 +44,10 @@ export default function FierCategory() {
 
     const handleSubmit1 = async (data) => {
 
-        console.log("eeeeeeee", data);
+    
 
         if (update) {
-            console.log("updet", update);
-            firestore()
-                .collection('category2')
-                .doc(update)
-                .set(data)
-                .then(() => {
-                    console.log('Updat added!');
-                });
+            dispatch(handleupdate(data))
 
         } else {
           dispatch(addcategorydata(data));
@@ -74,7 +67,9 @@ export default function FierCategory() {
        
         setValues(data)
         setUpdate(data.id)
-    
+    }
+    const handleupdate=(data)=>{
+        dispatch(updatefierdata(data))
     }
 
     let userSchema = object({
@@ -87,8 +82,9 @@ export default function FierCategory() {
         },
         validationSchema: userSchema,
         onSubmit: (values, { resetForm }) => {
-            //   alert(JSON.stringify(values, null, 2));
+       
             handleSubmit1(values);
+           
             resetForm();
         },
     });

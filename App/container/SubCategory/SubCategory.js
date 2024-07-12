@@ -4,11 +4,15 @@ import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, TouchableW
 import { TextInput } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { horizontalScale, moderateScale, verticalScale } from '../../../assets/Fonts/Matrix/Matrix';
 import { useFormik } from 'formik';
 import firestore from '@react-native-firebase/firestore';
 import { object, string } from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { getcategorydata } from '../../redux/action/fiercategory.action';
+import { subcategoriesriducer } from '../../redux/reducer/subcategory.reducer';
+import { addSubcategory, deleteSubcategory, getSubcategory, updeteSubcategory } from '../../redux/action/subcategory.action';
+import { deleteCategory, getCategory } from '../../redux/action/category.action';
 
 export default function SubCategory() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -21,82 +25,34 @@ export default function SubCategory() {
   const [update, setUpdate] = useState(null);
   const [category, setCategory] = useState([])
 
-  useEffect(() => {
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getcategorydata());
     Subgetdata();
   }, []);
 
+  const categorya = useSelector(state => state.fiercategory);
+  const subcategorya = useSelector(state => state.subcategorys);
+  // console.log("ssssppppppppppppp", subcategorya.subcategories);
 
 
   const Subgetdata = async () => {
-    const Categorydata = [];
 
-       await firestore()
+    dispatch(getSubcategory())
 
-      .collection('category2')
-
-      .get()
-      .then(querySnapshot => {
-        // console.log('Total users: ', querySnapshot.size);
-
-        querySnapshot.forEach(documentSnapshot => {
-          // console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
-          Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
-
-        });
-      });
-
-      setCategory(Categorydata)
-    const SubCategorydata = [];
-
-     await firestore()
-
-      .collection('SubCategory')
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(documentSnapshot => {
-
-          SubCategorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
-
-        });
-      });
-
-
-    setdata2(SubCategorydata)
-    setItems(Categorydata.map(v => ({ label: v.name, value: v.id })))
-  
   }
 
-  const handleSubmit1 = async (data) => {
-    // console.log("fffffffffffff", value);
 
-    // const subCategoryData = {
-    //   ...data,
-    //   category: value
-    // };
+  const handleSubmit1 = async (data) => {
 
     if (update) {
-      // console.log("updet", update);
-      firestore()
-        .collection('SubCategory')
-        .doc(update)
-        .set(data)
-        .then(() => {
-          console.log('Updat added!');
-        });
+      dispatch(updeteSubcategory(data))
+      Subgetdata();
     } else {
+      dispatch(addSubcategory(data))
 
-      await firestore()
-        .collection('SubCategory')
-        .add(data)
-        .then(() => {
-          console.log('SubCategory added!');
-        })
-        .catch((error) => {
-          console.log(error);
-        })
     }
-
 
     setModalVisible(false);
     Subgetdata();
@@ -112,15 +68,8 @@ export default function SubCategory() {
   }
 
   const handleDeleteData = async (id) => {
+    dispatch(deleteSubcategory(id))
 
-    console.log("eeeeeeee", id);
-    await firestore()
-      .collection('SubCategory')
-      .doc(id)
-      .delete()
-      .then(() => {
-        console.log('User deleted!');
-      });
 
     Subgetdata();
   }
@@ -129,26 +78,26 @@ export default function SubCategory() {
 
   let userSchema = object({
     name: string().required(),
-    category_id:string().required(),
+    category_id: string().required(),
   });
 
 
   const formik = useFormik({
     initialValues: {
       name: '',
-      category_id:''
+      category_id: ''
     },
     validationSchema: userSchema,
     onSubmit: (values, { resetForm }) => {
-      //   alert(JSON.stringify(values, null, 2));
+
       console.log("valis", values);
       handleSubmit1(values);
       resetForm();
-      // Subgetdata();
+
     },
   });
 
-  const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues, resetForm,setFieldValue } = formik;
+  const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues, resetForm, setFieldValue } = formik;
 
 
   // data2.map((v, i) => {
@@ -162,7 +111,7 @@ export default function SubCategory() {
       <View style={styles.div}>
         <TouchableOpacity
           style={styles.Opacity}
-          onPress={() => { setModalVisible(true); resetForm(),setUpdate(null) }}
+          onPress={() => { setModalVisible(true); resetForm(), setUpdate(null) }}
         >
           <Text style={styles.Opacitytext}>SubCategory</Text>
         </TouchableOpacity>
@@ -170,9 +119,9 @@ export default function SubCategory() {
       <View style={styles.container}>
         <View style={styles.manProduct}>
           {
-            data2.map((v, i) => (
+            subcategorya.subcategories.map((v, i) => (
               <View key={i} style={styles.Viewman}>
-                <Text style={{ color: 'black' }}>{ category.find((v1) => v.category_id === v1.id)?.name }</Text>
+                <Text style={{ color: 'black' }}>{categorya.categories.find((v1) => v.category_id === v1.id)?.name}</Text>
                 <Text style={{ color: 'black' }}>{v.name}</Text>
                 <View style={styles.iconview}>
 
@@ -212,13 +161,13 @@ export default function SubCategory() {
                   <View style={styles.modalOverlay}>
 
                     <View style={styles.modalContent}>
-                      <Text style={styles.modalText}>category</Text>
+                      <Text style={styles.modalText}>Sub category</Text>
                       <View style={styles.DropDown}>
                         <DropDownPicker
-
+                         
                           open={open}
                           value={value}
-                          items={items}
+                          items={categorya.categories.map(v => ({ label: v.name, value: v.id }))}
                           setOpen={setOpen}
                           setValue={setValue}
                           setItems={setItems}
@@ -226,8 +175,12 @@ export default function SubCategory() {
                           onChangeText={handleChange('category_id')}
                           onPress={() => setDropDownPicker(!dropDownPicker)}
                           onSelectItem={(items) => setFieldValue('category_id', items.value)}
+                          // onChangeValue={(value) => {
+                          //   console.log("value",value);
+                          // }}
+                       
                         />
-                        <Text style={{ color: 'red' }}>{dropDownPicker&&touched.category_id ? '' : errors.category_id}</Text>
+                        <Text style={{ color: 'red' }}>{dropDownPicker && touched.category_id ? '' : errors.category_id}</Text>
                       </View>
                       <TextInput
                         style={styles.input}
@@ -334,7 +287,7 @@ const styles = StyleSheet.create({
     padding: horizontalScale(20),
     backgroundColor: 'white',
     borderRadius: moderateScale(5),
-    elevation:4,
+    elevation: 4,
     alignItems: 'center',
     borderWidth: 1,
   },
@@ -372,9 +325,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: moderateScale(16),
   },
-  modalContainer:{
+  modalContainer: {
 
     paddingTop: horizontalScale(200),
   },
-  
+
 });

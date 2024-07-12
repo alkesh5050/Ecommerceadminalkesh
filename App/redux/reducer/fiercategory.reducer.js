@@ -1,4 +1,4 @@
-import { ADD_FIERCATEGORY, DELETE_FIERCATEGORY, GETDATAFIERCATEGORY } from "../ActionTypes"
+import { ADD_FIERCATEGORY, DELETE_FIERCATEGORY, GETDATAFIERCATEGORY, UPDATE_FIERCATEGORY } from "../ActionTypes"
 
 
 const intialState = {
@@ -7,7 +7,7 @@ const intialState = {
     error: null
 }
 export const FierCategoryReducer = (state = intialState, action) => {
-    console.log("actoin", action);
+    // console.log("actoin", action);
     switch (action.type) {
         case GETDATAFIERCATEGORY:
             return {
@@ -25,6 +25,18 @@ export const FierCategoryReducer = (state = intialState, action) => {
             return {
                 isLoading: false,
                 categories: state.categories.filter((v) => v.id !== action.payload),
+                error: null
+            }
+        case UPDATE_FIERCATEGORY:
+            return {
+                isLoading: false,
+                categories: state.categories.map((v) => {
+                    if (v.id === action.payload.id) {
+                        return action.payload
+                    } else {
+                        return v;
+                    }
+                }),
                 error: null
             }
         default:

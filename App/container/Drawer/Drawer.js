@@ -8,6 +8,7 @@ import Category1 from '../category/Category1';
 import Cate from '../category/Cate';
 import CategoryF from '../CategoryF/CategoryF';
 import FierCategory from '../category/FierCategory';
+import SubCategoryA from '../SubCategoryA/SubCategoryA';
 
 const Drawer = createDrawerNavigator();
 
@@ -21,6 +22,7 @@ export default function () {
       <Drawer.Screen name="cate" component={Cate} />
       <Drawer.Screen name="FierCategory" component={FierCategory} />
       <Drawer.Screen name="cateF" component={CategoryF} />
+      <Drawer.Screen name="subcatA" component={SubCategoryA} />
     
     </Drawer.Navigator>
   )

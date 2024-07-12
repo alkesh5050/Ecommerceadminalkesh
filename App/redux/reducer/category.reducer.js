@@ -1,4 +1,4 @@
-import { ADD_CATEGORY, DELETE_CATEGORY, GET_CATEGORY } from "../ActionTypes";
+import { ADD_CATEGORY, DELETE_CATEGORY, GET_CATEGORY, UPDATE_CATEGORY } from "../ActionTypes";
 
 const intialState = {
     isLoading: false,
@@ -7,7 +7,7 @@ const intialState = {
 }
 
 export const categoryReducer = (state=intialState, action) => {
-    console.log("categoryReducer",action);
+    // console.log("categoryReducer",action);
 
     switch (action.type) {
         case GET_CATEGORY:
@@ -26,6 +26,18 @@ export const categoryReducer = (state=intialState, action) => {
             return {
                 isLoading: false,
                 categories: state.categories.filter((v) => v.id !== action.payload),
+                error: null
+            }
+        case UPDATE_CATEGORY:
+            return {
+                isLoading: false,
+                categories: state.categories.map((v) => {
+                    if (v.id === action.payload.id) {
+                        return action.payload
+                    } else {
+                        return v;
+                    }
+                }),
                 error: null
             }
         default:

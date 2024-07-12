@@ -1,4 +1,4 @@
-import { ADD_CATEGORY, DELETE_CATEGORY, GET_CATEGORY } from "../ActionTypes";
+import { ADD_CATEGORY, DELETE_CATEGORY, GET_CATEGORY, UPDATE_CATEGORY } from "../ActionTypes";
 import firestore from '@react-native-firebase/firestore';
 
 export const getCategory = () => async (dispatch) => {
@@ -50,9 +50,25 @@ export const deleteCategory = (id) => async (dispatch) => {
             .doc(id)
             .delete()
             .then(() => {
-                dispatch({type: DELETE_CATEGORY, payload: id})
+                dispatch({ type: DELETE_CATEGORY, payload: id })
             });
     } catch (error) {
 
+    }
+}
+
+export const updateCategory = (data) => async (dispatch) => {
+    try {
+        const temp = {...data};
+        delete temp.id;
+        await firestore()
+            .collection('Category')
+            .doc(data.id)
+            .update(temp)
+            .then((doc) => {
+                dispatch({type: UPDATE_CATEGORY, payload: data})
+            });
+    } catch (error) {
+        console.log(error);
     }
 }

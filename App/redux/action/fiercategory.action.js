@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-import { ADD_FIERCATEGORY, DELETE_FIERCATEGORY, GETDATACATEGORY, GETDATAFIERCATEGORY } from '../ActionTypes';
+import { ADD_FIERCATEGORY, DELETE_FIERCATEGORY, GETDATACATEGORY, GETDATAFIERCATEGORY, UPDATE_FIERCATEGORY } from '../ActionTypes';
 
 export const getcategorydata = () => async (dispatch) => {
 
@@ -38,7 +38,7 @@ export const addcategorydata = (data) => async (dispatch) => {
             .catch((errors) => {
                 console.log(errors);
             })
-       
+
     } catch (error) {
         console.log(error);
     }
@@ -49,15 +49,30 @@ export const deletefiercategory = (id) => async (dispatch) => {
 
     try {
         await firestore()
-        .collection('category2')
-        .doc(id)
-        .delete()
-        .then(() => {
-            console.log('User deleted!');
-            dispatch({ type:DELETE_FIERCATEGORY, payload: id });
-        });
-     
+            .collection('category2')
+            .doc(id)
+            .delete()
+            .then(() => {
+                console.log('User deleted!');
+                dispatch({ type: DELETE_FIERCATEGORY, payload: id });
+            });
+
     } catch (error) {
         console.log(error);
+    }
+}
+export const updatefierdata = () =>async (dispatch) => {
+    try {
+        const temp ={...data};
+        delete temp.id;
+      await  firestore()
+            .collection('category2')
+            .doc(data.id)
+            .update(temp)
+            .then(() => {
+               dispatch({type:UPDATE_FIERCATEGORY,payload:data})
+            });
+    } catch (error) {
+
     }
 }
