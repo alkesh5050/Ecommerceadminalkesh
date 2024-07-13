@@ -35,7 +35,7 @@ export default function SubCategory() {
   const categorya = useSelector(state => state.fiercategory);
   const subcategorya = useSelector(state => state.subcategorys);
   // console.log("ssssppppppppppppp", subcategorya.subcategories);
-
+  // console.log("ssssppppppppppppp", subcategorya.subcategories);
 
   const Subgetdata = async () => {
 
@@ -116,6 +116,7 @@ export default function SubCategory() {
           <Text style={styles.Opacitytext}>SubCategory</Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.container}>
         <View style={styles.manProduct}>
           {
@@ -163,10 +164,10 @@ export default function SubCategory() {
                     <View style={styles.modalContent}>
                       <Text style={styles.modalText}>Sub category</Text>
                       <View style={styles.DropDown}>
+
                         <DropDownPicker
-                         
                           open={open}
-                          value={value}
+                          value={formik.values.category_id}
                           items={categorya.categories.map(v => ({ label: v.name, value: v.id }))}
                           setOpen={setOpen}
                           setValue={setValue}
@@ -175,10 +176,7 @@ export default function SubCategory() {
                           onChangeText={handleChange('category_id')}
                           onPress={() => setDropDownPicker(!dropDownPicker)}
                           onSelectItem={(items) => setFieldValue('category_id', items.value)}
-                          // onChangeValue={(value) => {
-                          //   console.log("value",value);
-                          // }}
-                       
+                    
                         />
                         <Text style={{ color: 'red' }}>{dropDownPicker && touched.category_id ? '' : errors.category_id}</Text>
                       </View>

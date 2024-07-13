@@ -9,6 +9,10 @@ import { horizontalScale, moderateScale, verticalScale } from '../../../assets/F
 import firestore from '@react-native-firebase/firestore';
 import { object, string } from 'yup';
 import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct, deleteProduct, getProductata, updeteProduct } from '../../redux/action/product.action';
+import { getcategorydata } from '../../redux/action/fiercategory.action';
+import { getSubcategory } from '../../redux/action/subcategory.action';
 
 export default function Product() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -28,57 +32,65 @@ export default function Product() {
   const [items1, setItems1] = useState([]);
 
   useEffect(() => {
+    dispatch(getcategorydata());
+    dispatch(getSubcategory());
     getdata();
     Subcategetdata();
   }, []);
-
+  const dispatch = useDispatch();
+  const categorya = useSelector(state => state.fiercategory);
+  const subcategorya = useSelector(state => state.subcategorys);
+  const productee = useSelector(state => state.products);
+  // console.log("ssssppppppppppppp", categorya.categories);
+  //  console.log("ssssaaaaaaaaaaaaaa", subcategorya.subcategories);
+  console.log("ssssaaaaaaaaaaaaaa", productee.produc);
 
   const getdata = async () => {
-    const Categorydata = [];
+    // const Categorydata = [];
 
-    await firestore()
-      .collection('category2')
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(documentSnapshot => {
+    // await firestore()
+    //   .collection('category2')
+    //   .get()
+    //   .then(querySnapshot => {
+    //     querySnapshot.forEach(documentSnapshot => {
 
-          Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
+    //       Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
 
-        });
-      });
-    setCategory(Categorydata);
-    setItems(Categorydata.map(v => ({ label: v.name, value: v.id })))
+    //     });
+    //   });
+    // setCategory(categorya.categories);
+    setItems(categorya.categories.map(v => ({ label: v.name, value: v.id })))
 
+    dispatch(getProductata())
+    // const Productdata = [];
+    // await firestore()
+    //   .collection('Product')
+    //   .get()
+    //   .then(querySnapshot => {
+    //     querySnapshot.forEach(documentSnapshot => {
 
-    const Productdata = [];
-    await firestore()
-      .collection('Product')
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(documentSnapshot => {
+    //       Productdata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
 
-          Productdata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
-
-        });
-      });
-    setdata(Productdata)
+    //     });
+    //   });
+    // setdata(Productdata)
 
   }
   const Subcategetdata = async (id) => {
-    const SubCategorydata = [];
-    await firestore()
-      .collection('SubCategory')
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(documentSnapshot => {
-          SubCategorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
-        });
-      });
+    // const SubCategorydata = [];
+    // await firestore()
+    //   .collection('SubCategory')
+    //   .get()
+    //   .then(querySnapshot => {
+    //     querySnapshot.forEach(documentSnapshot => {
+    //       SubCategorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
+    //     });
+    //   });
 
-    const sub = SubCategorydata.filter(v => v.category_id === id);
-    console.log("iddddd", sub);
+    const sub = subcategorya.subcategories.filter(v => v.category_id === id);
+    // console.log("iddddd", sub);
     setItems1(sub.map(v => ({ label: v.name, value: v.id })));
-    setSubcategory(SubCategorydata);
+    // setSubcategory(subcategorya.subcategories);
 
   }
 
@@ -87,41 +99,43 @@ export default function Product() {
     // console.log(data);
 
     if (update) {
-      firestore()
-        .collection('Product')
-        .doc(update)
-        .update(data)
-        .then(() => {
-          console.log('User updated!');
-        });
+      dispatch(updeteProduct(data))
+      // firestore()
+      //   .collection('Product')
+      //   .doc(update)
+      //   .update(data)
+      //   .then(() => {
+      //     console.log('User updated!');
+      //   });
     } else {
-
-      await firestore()
-        .collection('Product')
-        .add(data)
-        .then(() => {
-          console.log('Product added!');
-        })
-        .catch((error) => {
-          console.log(error);
-        })
+      dispatch(addProduct(data));
+      // await firestore()
+      //   .collection('Product')
+      //   .add(data)
+      //   .then(() => {
+      //     console.log('Product added!');
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   })
     }
 
 
     setModalVisible(false);
     getdata();
-    setdata(Productdata);
+    // Subcategetdata();
 
   }
   const handleDeleteData = async (id) => {
+    dispatch(deleteProduct(id));
     // console.log("idddddd", id);
-    await firestore()
-      .collection('Product')
-      .doc(id)
-      .delete()
-      .then(() => {
-        console.log('User deleted!');
-      });
+  //   await firestore()
+  //     .collection('Product')
+  //     .doc(id)
+  //     .delete()
+  //     .then(() => {
+  //       console.log('User deleted!');
+  //     });
   }
   const Editdata = (data) => {
     // console.log(data);
@@ -165,7 +179,7 @@ export default function Product() {
       <View style={styles.div}>
         <TouchableOpacity
           style={styles.Opacity}
-          onPress={() =>(setModalVisible(true),setUpdate(null),resetForm()) }
+          onPress={() => (setModalVisible(true), setUpdate(null), resetForm())}
         >
           <Text style={styles.Opacitytext}>Add Product</Text>
         </TouchableOpacity>
@@ -176,11 +190,11 @@ export default function Product() {
 
         <View style={styles.manProduct}>
           {
-            data.map((v, i) => (
+            productee.produc.map((v, i) => (
               <View style={styles.Viewman}>
-                <View style={{   borderWidth: 0.4, width: '65%', padding: 10,borderRadius:5 }}>
-                  <Text style={{ color: '#9B9B9B' }}>category:=<Text style={{ color: 'black' }}>{category.find((v1) => v.category_id === v1.id)?.name}</Text></Text>
-                  <Text style={{ color: '#9B9B9B' }}>Subcategory:=<Text style={{ color: 'black' }}>{Subcategory.find((v1) => v.Subcategory_id === v1.id)?.name}</Text></Text>
+                <View style={{ borderWidth: 0.4, width: '65%', padding: 10, borderRadius: 5 }}>
+                  <Text style={{ color: '#9B9B9B' }}>category:=<Text style={{ color: 'black' }}>{categorya.categories.find((v1) => v.category_id === v1.id)?.name}</Text></Text>
+                  <Text style={{ color: '#9B9B9B' }}>Subcategory:=<Text style={{ color: 'black' }}>{subcategorya.subcategories.find((v1) => v.Subcategory_id === v1.id)?.name}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Product:=<Text style={{ color: 'black' }}>{v.Product_name}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Price:=<Text style={{ color: 'black' }}>{v.Price}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Discretion:=<Text style={{ color: 'black' }}>{v.Discretion}</Text></Text>
@@ -220,7 +234,7 @@ export default function Product() {
               <View style={styles.DropDown}>
                 <DropDownPicker
                   open={open}
-                  value={value}
+                  value={formik.values.category_id}
                   items={items}
                   setOpen={setOpen}
                   setValue={setValue}

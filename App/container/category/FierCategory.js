@@ -27,7 +27,7 @@ export default function FierCategory() {
 
     const dispatch = useDispatch()
     const category = useSelector(state => state.fiercategory)
-    // console.log("ssssppppppppppppppppps", category.categories);
+    console.log("ssssppppppppppppppppps", category.categories);
 
     const getdata = async () => {
 
@@ -39,7 +39,7 @@ export default function FierCategory() {
         // console.log("eeeeeeee", id);
      
         dispatch(deletefiercategory(id))
-        getdata();
+       
     }
 
     const handleSubmit1 = async (data) => {
@@ -54,7 +54,7 @@ export default function FierCategory() {
         }
 
         setModalVisible(false);
-        getdata();
+        
         setUpdate(null)
         // setName('')
     }
