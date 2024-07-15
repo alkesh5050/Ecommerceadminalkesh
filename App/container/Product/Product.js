@@ -34,58 +34,32 @@ export default function Product() {
   useEffect(() => {
     dispatch(getcategorydata());
     dispatch(getSubcategory());
-    getdata();
-    Subcategetdata();
+    // Subcategetdata();
+    dispatch(getProductata())
   }, []);
+
   const dispatch = useDispatch();
   const categorya = useSelector(state => state.fiercategory);
   const subcategorya = useSelector(state => state.subcategorys);
   const productee = useSelector(state => state.products);
   // console.log("ssssppppppppppppp", categorya.categories);
   //  console.log("ssssaaaaaaaaaaaaaa", subcategorya.subcategories);
-  console.log("ssssaaaaaaaaaaaaaa", productee.produc);
+  // console.log("ssssaaaaaaaaaaaaaa", productee.produc);
 
-  const getdata = async () => {
-    // const Categorydata = [];
+  // const getdata = async () => {
+  
+  //   setItems(categorya.categories.map(v => ({ label: v.name, value: v.id })))
 
-    // await firestore()
-    //   .collection('category2')
-    //   .get()
-    //   .then(querySnapshot => {
-    //     querySnapshot.forEach(documentSnapshot => {
+  // }
 
-    //       Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
+  useEffect(() => {
+    if (categorya.categories) {
+      setItems(categorya.categories.map(v => ({ label: v.name, value: v.id })));
+    }
+  }, [categorya.categories]);
 
-    //     });
-    //   });
-    // setCategory(categorya.categories);
-    setItems(categorya.categories.map(v => ({ label: v.name, value: v.id })))
-
-    dispatch(getProductata())
-    // const Productdata = [];
-    // await firestore()
-    //   .collection('Product')
-    //   .get()
-    //   .then(querySnapshot => {
-    //     querySnapshot.forEach(documentSnapshot => {
-
-    //       Productdata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
-
-    //     });
-    //   });
-    // setdata(Productdata)
-
-  }
   const Subcategetdata = async (id) => {
-    // const SubCategorydata = [];
-    // await firestore()
-    //   .collection('SubCategory')
-    //   .get()
-    //   .then(querySnapshot => {
-    //     querySnapshot.forEach(documentSnapshot => {
-    //       SubCategorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
-    //     });
-    //   });
+// console.log("idsubcategory__________id",id);
 
     const sub = subcategorya.subcategories.filter(v => v.category_id === id);
     // console.log("iddddd", sub);
@@ -96,58 +70,34 @@ export default function Product() {
 
 
   const handleSubmit1 = async (data) => {
-    // console.log(data);
 
     if (update) {
       dispatch(updeteProduct(data))
-      // firestore()
-      //   .collection('Product')
-      //   .doc(update)
-      //   .update(data)
-      //   .then(() => {
-      //     console.log('User updated!');
-      //   });
     } else {
       dispatch(addProduct(data));
-      // await firestore()
-      //   .collection('Product')
-      //   .add(data)
-      //   .then(() => {
-      //     console.log('Product added!');
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   })
     }
 
-
     setModalVisible(false);
-    getdata();
-    // Subcategetdata();
 
   }
+
   const handleDeleteData = async (id) => {
     dispatch(deleteProduct(id));
-    // console.log("idddddd", id);
-  //   await firestore()
-  //     .collection('Product')
-  //     .doc(id)
-  //     .delete()
-  //     .then(() => {
-  //       console.log('User deleted!');
-  //     });
+
   }
+
   const Editdata = (data) => {
     // console.log(data);
     setModalVisible(true)
     setValues(data);
     setUpdate(data.id)
+    Subcategetdata(data.category_id);
   }
 
   let userSchema = object({
     category_id: string().required(),
     Subcategory_id: string().required(),
-    Product_name: string().required("enter name").matches(/^[a-zA-Z ]+$/, "enter valid name"),
+    Product_name: string().required("Enter name").matches(/^[a-zA-Z ]+$/, "enter valid name"),
     Price: string().required(),
     Discretion: string().required(),
   });
@@ -191,7 +141,7 @@ export default function Product() {
         <View style={styles.manProduct}>
           {
             productee.produc.map((v, i) => (
-              <View style={styles.Viewman}>
+              <View style={styles.Viewman}  key={i}> 
                 <View style={{ borderWidth: 0.4, width: '65%', padding: 10, borderRadius: 5 }}>
                   <Text style={{ color: '#9B9B9B' }}>category:=<Text style={{ color: 'black' }}>{categorya.categories.find((v1) => v.category_id === v1.id)?.name}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Subcategory:=<Text style={{ color: 'black' }}>{subcategorya.subcategories.find((v1) => v.Subcategory_id === v1.id)?.name}</Text></Text>
@@ -249,15 +199,16 @@ export default function Product() {
 
               </View>
               <View style={styles.DropDown1}>
+
                 <DropDownPicker
                   open={open1}
-                  value={value1}
+                  value={formik.values.Subcategory_id}
                   items={items1}
                   setOpen={setOpen1}
                   setValue={setValue1}
                   setItems={setItems1}
                   placeholder={'Subcategory_id'}
-                  onChangeValue={() => handleChange('Subcategory_id')}
+                  // onChangeValue={() => handleChange('Subcategory_id')}
                   onPress={() => setDropDownPicker(!SubdropDownPicker)}
                   onSelectItem={(items) => setFieldValue('Subcategory_id', items.value)}
                 />
