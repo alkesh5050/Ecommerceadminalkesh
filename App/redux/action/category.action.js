@@ -8,10 +8,10 @@ export const getCategory = () => async (dispatch) => {
             .collection('Category')
             .get()
             .then(querySnapshot => {
-                console.log('Total users: ', querySnapshot.size);
+                // console.log('Total users: ', querySnapshot.size);
 
                 querySnapshot.forEach(documentSnapshot => {
-                    console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
+                    // console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
                     allCat.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
                 });
             });

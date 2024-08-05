@@ -8,7 +8,7 @@ const intialState = {
 }
 export const subcategoriesriducer = (state = intialState, action) => {
 
-    console.log("action", action);
+    // console.log("action", action);
 
     switch (action.type) {
 

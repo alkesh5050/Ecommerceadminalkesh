@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { ScrollView, TextInput, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -46,20 +46,16 @@ export default function Product() {
   //  console.log("ssssaaaaaaaaaaaaaa", subcategorya.subcategories);
   // console.log("ssssaaaaaaaaaaaaaa", productee.produc);
 
-  // const getdata = async () => {
-  
-  //   setItems(categorya.categories.map(v => ({ label: v.name, value: v.id })))
-
-  // }
 
   useEffect(() => {
-    if (categorya.categories) {
-      setItems(categorya.categories.map(v => ({ label: v.name, value: v.id })));
-    }
+    // if (categorya.categories) {
+    // console.log("data",categorya.categories);
+    setItems(categorya.categories.map(v => ({ label: v.name, value: v.id })));
+    // }
   }, [categorya.categories]);
 
   const Subcategetdata = async (id) => {
-// console.log("idsubcategory__________id",id);
+    // console.log("idsubcategory__________id",id);
 
     const sub = subcategorya.subcategories.filter(v => v.category_id === id);
     // console.log("iddddd", sub);
@@ -95,11 +91,11 @@ export default function Product() {
   }
 
   let userSchema = object({
-    category_id: string().required(),
-    Subcategory_id: string().required(),
-    Product_name: string().required("Enter name").matches(/^[a-zA-Z ]+$/, "enter valid name"),
-    Price: string().required(),
-    Discretion: string().required(),
+    category_id: string().required("selecte your category itme"),
+    Subcategory_id: string().required("selecte subcategory itme"),
+    Product_name: string().required("Enter producte name").matches(/^[a-zA-Z ]+$/, "enter valid name"),
+    Price: string().required().matches(/^(\d*([.,](?=\d{3}))?\d+)+((?!\2)[.,]\d\d)?$/, "enter price"),
+    Discretion: string().required("enter your discretion"),
   });
 
   const formik = useFormik({
@@ -141,8 +137,9 @@ export default function Product() {
         <View style={styles.manProduct}>
           {
             productee.produc.map((v, i) => (
-              <View style={styles.Viewman}  key={i}> 
-                <View style={{ borderWidth: 0.4, width: '65%', padding: 10, borderRadius: 5 }}>
+              
+              <View style={styles.Viewman} key={i}>
+                <View style={{ borderWidth: 0.4, width: '65%', padding: 10, borderRadius: 5,backgroundColor:'#FDD0EC' }}>
                   <Text style={{ color: '#9B9B9B' }}>category:=<Text style={{ color: 'black' }}>{categorya.categories.find((v1) => v.category_id === v1.id)?.name}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Subcategory:=<Text style={{ color: 'black' }}>{subcategorya.subcategories.find((v1) => v.Subcategory_id === v1.id)?.name}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Product:=<Text style={{ color: 'black' }}>{v.Product_name}</Text></Text>
@@ -177,81 +174,97 @@ export default function Product() {
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.container}
+            activeOpacity={1}
+            onPressOut={() => { setModalVisible(false); resetForm() }}
+          >
+            <ScrollView
+            
+              directionalLockEnabled={true}
+              contentContainerStyle={styles.scrollModal}
+            >
+              <TouchableWithoutFeedback>
+                <View style={styles.modalOverlay}>
 
-            <View style={styles.modalContent}>
-              <Text style={styles.modalText}>Product</Text>
-              <View style={styles.DropDown}>
-                <DropDownPicker
-                  open={open}
-                  value={formik.values.category_id}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  placeholder={'Category'}
-                  onChangeValue={() => Subcategetdata(value)}
-                  onPress={() => setSubDropDownPicker(!dropDownPicker)}
-                  onSelectItem={(items) => setFieldValue('category_id', items.value)}
+                  <View style={styles.modalContent}>
+                    <Text style={styles.modalText}>Product</Text>
+                    <View style={styles.DropDown}>
+                      <DropDownPicker
+                        open={open}
+                        value={formik.values.category_id}
+                        items={items}
+                        setOpen={setOpen}
+                        setValue={setValue}
+                        setItems={setItems}
+                        placeholder={'Category'}
+                        onChangeValue={() => Subcategetdata(value)}
+                        onPress={() => setSubDropDownPicker(!dropDownPicker)}
+                        onSelectItem={(items) => setFieldValue('category_id', items.value)}
+                        listMode="SCROLLVIEW"     
 
-                />
-                <Text style={{ color: 'red' }}>{dropDownPicker && touched.category_id ? '' : errors.category_id}</Text>
+                      />
+                      <Text style={{ color: 'red' }}>{dropDownPicker && touched.category_id ? '' : errors.category_id}</Text>
 
-              </View>
-              <View style={styles.DropDown1}>
+                    </View>
+                    <View style={styles.DropDown1}>
 
-                <DropDownPicker
-                  open={open1}
-                  value={formik.values.Subcategory_id}
-                  items={items1}
-                  setOpen={setOpen1}
-                  setValue={setValue1}
-                  setItems={setItems1}
-                  placeholder={'Subcategory_id'}
-                  // onChangeValue={() => handleChange('Subcategory_id')}
-                  onPress={() => setDropDownPicker(!SubdropDownPicker)}
-                  onSelectItem={(items) => setFieldValue('Subcategory_id', items.value)}
-                />
-                <Text style={{ color: 'red' }}>{SubdropDownPicker && touched.Subcategory_id ? '' : errors.Subcategory_id}</Text>
-              </View>
-              <TextInput
-                style={styles.input}
-                placeholder='Product_name'
-                placeholderTextColor='#9B9B9B'
-                onChangeText={handleChange('Product_name')}
-                onBlur={handleBlur('Product_name')}
-                value={values.Product_name}
-              />
-              <Text style={{ color: 'red' }}>{errors.Product_name && touched.Product_name ? errors.Product_name : ''}</Text>
+                      <DropDownPicker
+                        open={open1}
+                        value={formik.values.Subcategory_id}
+                        items={items1}
+                        setOpen={setOpen1}
+                        setValue={setValue1}
+                        setItems={setItems1}
+                        placeholder={'Subcategory_id'}
+                        // onChangeValue={() => handleChange('Subcategory_id')}
+                        onPress={() => setDropDownPicker(!SubdropDownPicker)}
+                        onSelectItem={(items) => setFieldValue('Subcategory_id', items.value)}
+                        listMode="SCROLLVIEW"
+                      />
+                      <Text style={{ color: 'red' }}>{SubdropDownPicker && touched.Subcategory_id ? errors.Subcategory_id : ''}</Text>
+                    </View>
+                    <TextInput
+                      style={styles.input}
+                      placeholder='Product_name'
+                      placeholderTextColor='#9B9B9B'
+                      onChangeText={handleChange('Product_name')}
+                      onBlur={handleBlur('Product_name')}
+                      value={values.Product_name}
+                    />
+                    <Text style={{ color: 'red' }}>{errors.Product_name && touched.Product_name ? errors.Product_name : ''}</Text>
 
-              <TextInput
-                style={styles.input}
-                placeholder='Price'
-                placeholderTextColor='#9B9B9B'
-                onChangeText={handleChange('Price')}
-                onBlur={handleBlur('Price')}
-                value={values.Price}
-              />
-              <Text style={{ color: 'red' }}>{errors.Price && touched.Price ? errors.Price : ''}</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder='Price'
+                      placeholderTextColor='#9B9B9B'
+                      onChangeText={handleChange('Price')}
+                      onBlur={handleBlur('Price')}
+                      value={values.Price}
+                    />
+                    <Text style={{ color: 'red' }}>{errors.Price && touched.Price ? errors.Price : ''}</Text>
 
-              <TextInput
-                style={styles.input}
-                placeholder='Discretion'
-                placeholderTextColor='#9B9B9B'
-                onChangeText={handleChange('Discretion')}
-                onBlur={handleBlur('Discretion')}
-                value={values.Discretion}
-              />
-              <Text style={{ color: 'red' }}>{errors.Discretion && touched.Discretion ? errors.Discretion : ''}</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder='Discretion'
+                      placeholderTextColor='#9B9B9B'
+                      onChangeText={handleChange('Discretion')}
+                      onBlur={handleBlur('Discretion')}
+                      value={values.Discretion}
+                    />
+                    <Text style={{ color: 'red' }}>{errors.Discretion && touched.Discretion ? errors.Discretion : ''}</Text>
 
-              <TouchableOpacity
-                style={styles.button1}
-                onPress={handleSubmit}
-              >
-                <Text style={styles.buttonText}>{update ? "update" : "submite"}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+                    <TouchableOpacity
+                      style={styles.button1}
+                      onPress={handleSubmit}
+                    >
+                      <Text style={styles.buttonText}>{update ? "update" : "submite"}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </ScrollView>
+          </TouchableOpacity>
         </Modal>
       </View>
     </ScrollView>
@@ -276,13 +289,13 @@ const styles = StyleSheet.create({
     marginBottom: moderateScale(10)
   },
   button1: {
-    padding: 13,
+    padding: horizontalScale(13),
     backgroundColor: '#007BFF',
     borderRadius: moderateScale(9),
-    paddingHorizontal: 100
+    paddingHorizontal: horizontalScale(100)
   },
   button: {
-    padding: 10,
+    padding:  horizontalScale(10),
     backgroundColor: '#007BFF',
     borderRadius: moderateScale(5),
 
@@ -296,7 +309,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#355554',
     borderRadius: moderateScale(10),
     elevation: moderateScale(6),
-    bottom: 10
+    bottom:  moderateScale(10)
   },
   Viewman: {
     width: '90%',
@@ -306,7 +319,7 @@ const styles = StyleSheet.create({
     elevation: moderateScale(6),
     margin: '5%',
     // justifyContent: 'center',
-    padding: 10,
+    padding:  horizontalScale(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     // columnGap:90
@@ -320,41 +333,43 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     // justifyContent: 'center',
-    paddingTop: 100,
-    alignItems: 'center',
+    // padding: 100,
+    borderWidth:moderateScale(1),
+    borderRadius:moderateScale(10),
+    // alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 
   modalContent: {
-    width: 300,
-    padding: 20,
+    width: horizontalScale(300),
+    padding: horizontalScale(20),
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius:moderateScale(10),
     alignItems: 'center',
 
   },
   modalText: {
     color: 'black',
-    fontSize: 18,
-    marginBottom: 20,
+    fontSize: moderateScale(18),
+    marginBottom:moderateScale(20),
   },
   DropDown: {
-    paddingBottom: 30,
-    paddingHorizontal: 5,
+    // paddingBottom: 30,
+    paddingHorizontal: horizontalScale(5),
     zIndex: 1000
   },
   DropDown1: {
-    paddingBottom: 30,
-    paddingHorizontal: 5,
+    paddingBottom: horizontalScale(30),
+    paddingHorizontal: horizontalScale(5),
     zIndex: 999
   },
   input: {
     color: 'black',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-    padding: 10,
-    height: '11%',
+    borderWidth: moderateScale(1),
+    borderRadius: moderateScale(5),
+    marginBottom: moderateScale(10),
+    padding: horizontalScale(10),
+    // height: '11%',
     width: '95%',
   },
   div: {
@@ -370,5 +385,8 @@ const styles = StyleSheet.create({
   Opacitytext: {
     color: 'white',
     fontSize: moderateScale(16),
+  },
+  scrollModal:{
+    paddingTop:'20%'
   }
 });

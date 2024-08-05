@@ -60,7 +60,7 @@ export default function SubCategory() {
 
   const Editdata = (data) => {
 
-    console.log("edite", data);
+    // console.log("edite", data);
     setModalVisible(true);
     setValues(data);
     setUpdate(data.id)

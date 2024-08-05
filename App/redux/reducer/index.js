@@ -5,6 +5,9 @@ import { FierCategoryReducer } from "./fiercategory.reducer";
 import { subCategoryData } from "../action/subcategory.action";
 import { subcategoriesriducer } from "./subcategory.reducer";
 import { Productreducer } from "./product.reducer";
+import BrandSlice from "../Slice/Brand.slice";
+
+
 
 
 
@@ -14,5 +17,6 @@ export const rootReducer = combineReducers({
     fiercategory:FierCategoryReducer,
     subcategorys:subcategoriesriducer,
     products:Productreducer,
+    brands:BrandSlice,
     
 })

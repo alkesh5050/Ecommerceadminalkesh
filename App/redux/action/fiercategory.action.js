@@ -11,10 +11,10 @@ export const getcategorydata = () => async (dispatch) => {
             .collection('category2')
             .get()
             .then(querySnapshot => {
-                console.log('Total users: ', querySnapshot.size);
+                // console.log('Total users: ', querySnapshot.size);
 
                 querySnapshot.forEach(documentSnapshot => {
-                    console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
+                    // console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
                     Categorydata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
 
                 });
