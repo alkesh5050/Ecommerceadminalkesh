@@ -4,18 +4,18 @@ import firestore from '@react-native-firebase/firestore';
 
 const intialState = {
     isLoading: false,
-    brand: [],
+    Color: [],
     error: null
 }
 
-export const addbrand = createAsyncThunk(
-    'brand/addbrand',
+export const addColordata = createAsyncThunk(
+    'Color/addColordata',
     async (data) => {
         // console.log("sssssssssssssssss",data);
         try {
             let id = '';
             await firestore()
-                .collection('Brand')
+                .collection('Color')
                 .add(data)
                 .then((doc) => {
                     id = doc.id
@@ -30,38 +30,38 @@ export const addbrand = createAsyncThunk(
     },
 )
 
-export const getbrand = createAsyncThunk(
-    'brand/getbrand',
+export const getcolordata = createAsyncThunk(
+    'Color/getcolordata',
     async () => {
         // console.log("sssssssssssssssss",data);
 
         try {
-            const getbranddata = [];
+            const getcolordata = [];
             await firestore()
-                .collection('Brand')
+                .collection('Color')
                 .get()
                 .then(querySnapshot => {
 
                     querySnapshot.forEach(documentSnapshot => {
 
-                        getbranddata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
+                        getcolordata.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
                     });
                 });
 
-            return getbranddata;
+            return getcolordata;
 
         } catch (error) {
             console.log(error);
         }
     },
 )
-export const Deletbrand = createAsyncThunk(
-    'brand/Deletbrand',
+export const Deletcolordata = createAsyncThunk(
+    'Color/Deletcolordata',
     async (id) => {
         // console.log("idididididididi ", id);
         try {
             await firestore()
-                .collection('Brand')
+                .collection('Color')
                 .doc(id)
                 .delete()
                 .then(() => {
@@ -77,15 +77,15 @@ export const Deletbrand = createAsyncThunk(
     },
 )
 
-export const updatebrand = createAsyncThunk(
-    'brand/updatebrand',
+export const Updatecolordata = createAsyncThunk(
+    'Color/Updatecolordata',
     async (data) => {
         // console.log("sjsjsjsjs ", data);
         try {
             const temp = { ...data };
             delete temp.id;
             await firestore()
-                .collection('Brand')
+                .collection('Color')
                 .doc(data.id)
                 .update(temp)
 
@@ -99,29 +99,29 @@ export const updatebrand = createAsyncThunk(
     },
 )
 
-export const brandSlice = createSlice({
-    name: 'brand',
+export const ColordataSlice = createSlice({
+    name: 'Color',
     initialState: intialState,
     extraReducers: (builder) => {
         builder
-            .addCase(getbrand.fulfilled, (state, action) => {
+            .addCase(addColordata.fulfilled, (state, action) => {
                 state.isLoading = false,
-                    state.brand = action.payload;
+                    state.Color = state.Color.concat(action.payload),
+                    state.error = null
+            })
+            .addCase(getcolordata.fulfilled, (state, action) => {
+                state.isLoading = false,
+                    state.Color = action.payload;
                 state.error = null;
             })
-            .addCase(addbrand.fulfilled, (state, action) => {
+            .addCase(Deletcolordata.fulfilled, (state, action) => {
                 state.isLoading = false,
-                    state.brand = state.brand.concat(action.payload),
+                    state.Color = state.Color.filter((v) => v.id !== action.payload),
                     state.error = null
             })
-            .addCase(Deletbrand.fulfilled, (state, action) => {
+            .addCase(Updatecolordata.fulfilled, (state, action) => {
                 state.isLoading = false,
-                    state.brand = state.brand.filter((v) => v.id !== action.payload),
-                    state.error = null
-            })
-            .addCase(updatebrand.fulfilled, (state, action) => {
-                state.isLoading = false,
-                    brand = state.brand.map((v) => {
+                    Color = state.Color.map((v) => {
                         if (v.id === action.payload.id) {
                             return action.payload
                         } else {
@@ -133,4 +133,4 @@ export const brandSlice = createSlice({
 
     },
 })
-export default brandSlice.reducer 
+export default ColordataSlice.reducer 

@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, deleteProduct, getProductata, updeteProduct } from '../../redux/action/product.action';
 import { getcategorydata } from '../../redux/action/fiercategory.action';
 import { getSubcategory } from '../../redux/action/subcategory.action';
+import { getbrand } from '../../redux/Slice/Brand.slice';
 
 export default function Product() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,10 +32,14 @@ export default function Product() {
   const [value1, setValue1] = useState(null);
   const [items1, setItems1] = useState([]);
 
+  const [openco, setOpenco] = useState(false);
+  const [valueco, setValueco] = useState(null);
+  const [itemsco, setItemsco] = useState([]);
+
   useEffect(() => {
     dispatch(getcategorydata());
     dispatch(getSubcategory());
-    // Subcategetdata();
+    dispatch(getbrand());
     dispatch(getProductata())
   }, []);
 
@@ -42,9 +47,10 @@ export default function Product() {
   const categorya = useSelector(state => state.fiercategory);
   const subcategorya = useSelector(state => state.subcategorys);
   const productee = useSelector(state => state.products);
+  const brands = useSelector(state => state.brands);
   // console.log("ssssppppppppppppp", categorya.categories);
   //  console.log("ssssaaaaaaaaaaaaaa", subcategorya.subcategories);
-  // console.log("ssssaaaaaaaaaaaaaa", productee.produc);
+  console.log("ssssaaaaaaaaaaaaaa", brands.brand);
 
 
   useEffect(() => {
@@ -96,6 +102,8 @@ export default function Product() {
     Product_name: string().required("Enter producte name").matches(/^[a-zA-Z ]+$/, "enter valid name"),
     Price: string().required().matches(/^(\d*([.,](?=\d{3}))?\d+)+((?!\2)[.,]\d\d)?$/, "enter price"),
     Discretion: string().required("enter your discretion"),
+    Brand_id: string().required("selecte your Brand"),
+    Color: string().required("selecte your color "),
   });
 
   const formik = useFormik({
@@ -105,6 +113,8 @@ export default function Product() {
       Product_name: '',
       Price: '',
       Discretion: '',
+      Brand_id:'',
+      Color:'',
     },
     validationSchema: userSchema,
     onSubmit: (values, { resetForm }) => {
@@ -137,9 +147,9 @@ export default function Product() {
         <View style={styles.manProduct}>
           {
             productee.produc.map((v, i) => (
-              
+
               <View style={styles.Viewman} key={i}>
-                <View style={{ borderWidth: 0.4, width: '65%', padding: 10, borderRadius: 5,backgroundColor:'#FDD0EC' }}>
+                <View style={{ borderWidth: 0.4, width: '65%', padding: 10, borderRadius: 5, backgroundColor: '#FDD0EC' }}>
                   <Text style={{ color: '#9B9B9B' }}>category:=<Text style={{ color: 'black' }}>{categorya.categories.find((v1) => v.category_id === v1.id)?.name}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Subcategory:=<Text style={{ color: 'black' }}>{subcategorya.subcategories.find((v1) => v.Subcategory_id === v1.id)?.name}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Product:=<Text style={{ color: 'black' }}>{v.Product_name}</Text></Text>
@@ -180,7 +190,7 @@ export default function Product() {
             onPressOut={() => { setModalVisible(false); resetForm() }}
           >
             <ScrollView
-            
+
               directionalLockEnabled={true}
               contentContainerStyle={styles.scrollModal}
             >
@@ -201,7 +211,7 @@ export default function Product() {
                         onChangeValue={() => Subcategetdata(value)}
                         onPress={() => setSubDropDownPicker(!dropDownPicker)}
                         onSelectItem={(items) => setFieldValue('category_id', items.value)}
-                        listMode="SCROLLVIEW"     
+                        listMode="SCROLLVIEW"
 
                       />
                       <Text style={{ color: 'red' }}>{dropDownPicker && touched.category_id ? '' : errors.category_id}</Text>
@@ -211,7 +221,7 @@ export default function Product() {
 
                       <DropDownPicker
                         open={open1}
-                        value={formik.values.Subcategory_id}
+                        value={value}
                         items={items1}
                         setOpen={setOpen1}
                         setValue={setValue1}
@@ -223,6 +233,23 @@ export default function Product() {
                         listMode="SCROLLVIEW"
                       />
                       <Text style={{ color: 'red' }}>{SubdropDownPicker && touched.Subcategory_id ? errors.Subcategory_id : ''}</Text>
+                    </View>
+                    <View style={styles.DropDown2}>
+
+                      <DropDownPicker
+                        open={openco}
+                        value={valueco}
+                        items={ brands.brand.map(v => ({label : v.name ,value :v.id}))}
+                        setOpen={setOpenco}
+                        setValue={setValueco}
+                        setItems={setItemsco}
+                        placeholder={'Choose Brand'}
+                        // onChangeValue={() => handleChange('Brand_id')}
+                        onPress={() => setDropDownPicker(!SubdropDownPicker)}
+                        onSelectItem={(items) => setFieldValue('Brand_id', items.value)}
+                        listMode="SCROLLVIEW"
+                      />
+                      <Text style={{ color: 'red' }}>{SubdropDownPicker && touched.Brand_id ? errors.Brand_id : ''}</Text>
                     </View>
                     <TextInput
                       style={styles.input}
@@ -295,7 +322,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(100)
   },
   button: {
-    padding:  horizontalScale(10),
+    padding: horizontalScale(10),
     backgroundColor: '#007BFF',
     borderRadius: moderateScale(5),
 
@@ -309,7 +336,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#355554',
     borderRadius: moderateScale(10),
     elevation: moderateScale(6),
-    bottom:  moderateScale(10)
+    bottom: moderateScale(10)
   },
   Viewman: {
     width: '90%',
@@ -319,7 +346,7 @@ const styles = StyleSheet.create({
     elevation: moderateScale(6),
     margin: '5%',
     // justifyContent: 'center',
-    padding:  horizontalScale(10),
+    padding: horizontalScale(10),
     flexDirection: 'row',
     justifyContent: 'space-between',
     // columnGap:90
@@ -334,8 +361,8 @@ const styles = StyleSheet.create({
     flex: 1,
     // justifyContent: 'center',
     // padding: 100,
-    borderWidth:moderateScale(1),
-    borderRadius:moderateScale(10),
+    borderWidth: moderateScale(1),
+    borderRadius: moderateScale(10),
     // alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
@@ -344,14 +371,14 @@ const styles = StyleSheet.create({
     width: horizontalScale(300),
     padding: horizontalScale(20),
     backgroundColor: 'white',
-    borderRadius:moderateScale(10),
+    borderRadius: moderateScale(10),
     alignItems: 'center',
 
   },
   modalText: {
     color: 'black',
     fontSize: moderateScale(18),
-    marginBottom:moderateScale(20),
+    marginBottom: moderateScale(20),
   },
   DropDown: {
     // paddingBottom: 30,
@@ -359,7 +386,12 @@ const styles = StyleSheet.create({
     zIndex: 1000
   },
   DropDown1: {
-    paddingBottom: horizontalScale(30),
+    paddingBottom: horizontalScale(10),
+    paddingHorizontal: horizontalScale(5),
+    zIndex: 999
+  },
+  DropDown2: {
+    paddingBottom: horizontalScale(10),
     paddingHorizontal: horizontalScale(5),
     zIndex: 999
   },
@@ -386,7 +418,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: moderateScale(16),
   },
-  scrollModal:{
-    paddingTop:'20%'
+  scrollModal: {
+    paddingTop: '20%'
   }
 });

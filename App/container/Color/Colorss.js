@@ -13,8 +13,9 @@ import firestore from '@react-native-firebase/firestore';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCategory, deleteCategory, getCategory, updateCategory } from '../../redux/action/category.action';
 import { addbrand, Deletbrand, fetchbrand, getbrand, updatebrand } from '../../redux/Slice/Brand.slice';
+import { addColordata, Deletcolordata, getcolordata, Updatecolordata } from '../../redux/Slice/Colorss.slice';
 
-export default function brand() {
+export default function Colorss() {
     const [modalVisible, setModalVisible] = useState(false);
     const [name, setName] = useState('');
     const [data, setdata] = useState([]);
@@ -24,30 +25,30 @@ export default function brand() {
 
     const dispatch = useDispatch();
     
-    const brands = useSelector(state => state.brands);
-    
+    const colord = useSelector(state => state.colord);
+       
     useEffect(() => {
-        dispatch(getbrand());
+        dispatch(getcolordata());
         
     }, []);
     // const brandList = brands.brand || [];
 
 
 
-    // console.log("brands.brand", brands.brand);
+    // console.log("colord", colord.Color);
 
 
     const handleSubmit1 = async (data) => {
         // console.log("ffffffffffffff", data);
 
-        dispatch(addbrand(data));
-        // dispatch(getbrand());   
+        dispatch(addColordata(data));
+        // dispatch(getcolordata());   
     }
 
 
     const handleDeleteData = async (id) => {
-        dispatch(Deletbrand(id));
-        dispatch(getbrand());
+        dispatch(Deletcolordata(id));
+        // dispatch(getcolordata());
     }
 
     const Editdata = async (data) => {
@@ -58,10 +59,10 @@ export default function brand() {
     }
 
     const handleUpdateData = (data) => {
-        dispatch(updatebrand(data))
+        dispatch(Updatecolordata(data))
       
         setUpdate(null);
-        dispatch(getbrand());
+        dispatch(getcolordata());
     }
 
     let catSchema = object({
@@ -107,7 +108,7 @@ export default function brand() {
                 <View style={styles.manProduct}>
 
                 {
-                        brands.brand.map((v, i) => (  
+                        colord.Color.map((v, i) => (  
                             <View key={i} style={styles.Viewman}>
                                 <Text style={{ color: 'black' }}>{v.name}</Text>
                                 <View style={styles.iconview}>
