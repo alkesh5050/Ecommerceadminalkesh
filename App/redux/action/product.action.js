@@ -24,7 +24,7 @@ export const getProductata = () => async (dispatch) => {
 }
 export const addProduct = (data) => async (dispatch) => {
 
-    console.log("Product");
+    console.log("Product-----photo gallery",data);
     try {
         await firestore()
             .collection('Product')

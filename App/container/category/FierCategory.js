@@ -27,7 +27,7 @@ export default function FierCategory() {
 
     const dispatch = useDispatch()
     const category = useSelector(state => state.fiercategory)
-    console.log("ssssppppppppppppppppps", category.categories);
+    // console.log("ssssppppppppppppppppps", category.categories);
 
     const getdata = async () => {
 
@@ -109,7 +109,7 @@ export default function FierCategory() {
 
                     {
                         category.categories.map((v, i) => (
-                            <View style={styles.Viewman}>
+                            <View style={styles.Viewman} key={i}>
                                 <Text style={{ color: 'black' }}>{v.name}</Text>
                                 <View style={styles.iconview}>
 

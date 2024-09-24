@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addCategory, deleteCategory, getCategory, updateCategory } from '../../redux/action/category.action';
 import { addbrand, Deletbrand, fetchbrand, getbrand, updatebrand } from '../../redux/Slice/Brand.slice';
 
-export default function brand() {
+export default function Brand() {
     const [modalVisible, setModalVisible] = useState(false);
     const [name, setName] = useState('');
     const [data, setdata] = useState([]);

@@ -56,7 +56,7 @@ export default function Cate() {
         validationSchema: userSchema,
 
         onSubmit: (values, {resetForm}) => {
-            console.log(values);
+            // console.log(values);
             setModalVisible(!modalVisible)
             resetForm();
 
@@ -81,7 +81,7 @@ export default function Cate() {
         const catData = await AsyncStorage.getItem("category");
         // console.log(catData);
 
-        console.log("update", update);
+        // console.log("update", update);
 
         if (update) {
 
@@ -143,9 +143,9 @@ export default function Cate() {
 
     const { handleSubmit, handleChange, errors, values, setFieldValue, setValues, touched, handleBlur } = formik;
 
-    console.log("errors",errors.name);
-    console.log("check", touched);
-    console.log("values", values.name);
+    // console.log("errors",errors.name);
+    // console.log("check", touched);
+    // console.log("values", values.name);
 
     //dropdown
     //radio button
@@ -301,7 +301,7 @@ export default function Cate() {
             {
 
                 data.map((v) => (
-                    <View style={styles.Viewman}>
+                    <View style={styles.Viewman} key={v.id}>
                         <Text style={{ color: 'black' }}>{v.name}</Text>
                         <Text style={{ color: 'black' }}>{v.age}</Text>
                         <View style={styles.iconview}>

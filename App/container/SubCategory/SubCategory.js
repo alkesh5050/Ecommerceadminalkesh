@@ -90,7 +90,7 @@ export default function SubCategory() {
     validationSchema: userSchema,
     onSubmit: (values, { resetForm }) => {
 
-      console.log("valis", values);
+      // console.log("valis", values);
       handleSubmit1(values);
       resetForm();
 

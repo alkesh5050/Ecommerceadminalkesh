@@ -27,18 +27,18 @@ export default function CategoryF() {
     const dispatch = useDispatch();
     const category = useSelector(state => state.category);
 
-    console.log("ssssssssss", category.categories);
+    // console.log("ssssssssss", category.categories);
 
     const getdata = async () => {
         
         dispatch(getCategory())
-        console.log("wwwwwwwwwwwwww",category);
+        // console.log("wwwwwwwwwwwwww",category);
 
     }
 
 
     const handleSubmit1 = async (data) => {
-        console.log("ffffffffffffff", data);
+        // console.log("ffffffffffffff", data);
         dispatch(addCategory(data));
 
         
@@ -85,8 +85,8 @@ export default function CategoryF() {
 
     const { handleBlur, handleChange, handleSubmit, errors, values, touched,setValues } = formik;
 
-    console.log("errors", errors);
-    console.log("values", values);
+    // console.log("errors", errors);
+    // console.log("values", values);
     return (
         <ScrollView>
 

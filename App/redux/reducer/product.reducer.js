@@ -6,7 +6,7 @@ const intialState = {
     error: null
 }
 export const Productreducer = (state = intialState, action) => {
-    console.log("action", action);
+    // console.log("action", action);
     switch (action.type) {
         case ADD_PRODUCTE:
             return {

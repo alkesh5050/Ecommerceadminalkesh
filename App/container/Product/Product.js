@@ -14,11 +14,15 @@ import { addProduct, deleteProduct, getProductata, updeteProduct } from '../../r
 import { getcategorydata } from '../../redux/action/fiercategory.action';
 import { getSubcategory } from '../../redux/action/subcategory.action';
 import { getbrand } from '../../redux/Slice/Brand.slice';
+import { getcolordata } from '../../redux/Slice/Colorss.slice';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export default function Product() {
   const [modalVisible, setModalVisible] = useState(false);
   const [dropDownPicker, setDropDownPicker] = useState('');
   const [SubdropDownPicker, setSubDropDownPicker] = useState('');
+  const [dropDownbrand, setDropDownbrand] = useState('');
+  const [dropDownColor, setDropDownColor] = useState('');
   const [data, setdata] = useState([]);
   const [category, setCategory] = useState([])
   const [Subcategory, setSubcategory] = useState([])
@@ -32,6 +36,10 @@ export default function Product() {
   const [value1, setValue1] = useState(null);
   const [items1, setItems1] = useState([]);
 
+  const [openbrand, setOpenbrand] = useState(false);
+  const [valuebrand, setValuebrand] = useState(null);
+  const [itemsbrand, setItemsbrand] = useState([]);
+
   const [openco, setOpenco] = useState(false);
   const [valueco, setValueco] = useState(null);
   const [itemsco, setItemsco] = useState([]);
@@ -40,19 +48,49 @@ export default function Product() {
     dispatch(getcategorydata());
     dispatch(getSubcategory());
     dispatch(getbrand());
-    dispatch(getProductata())
+    dispatch(getProductata());
+    dispatch(getcolordata());
   }, []);
 
   const dispatch = useDispatch();
+
   const categorya = useSelector(state => state.fiercategory);
   const subcategorya = useSelector(state => state.subcategorys);
   const productee = useSelector(state => state.products);
   const brands = useSelector(state => state.brands);
-  // console.log("ssssppppppppppppp", categorya.categories);
-  //  console.log("ssssaaaaaaaaaaaaaa", subcategorya.subcategories);
-  console.log("ssssaaaaaaaaaaaaaa", brands.brand);
+  const colord = useSelector(state => state.colord)
 
 
+  const [image, setimage] = useState('');
+
+  const handleGallery = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true
+    }).then(image => {
+      console.log("Gallery photo", image.path);
+
+       setimage(image.path)
+      //  dispatch(addProduct({...data,url:image}));
+    })
+
+  }
+  
+  // const handleCamera = async () => {
+
+  //   ImagePicker.openCamera({
+  //     width: 300,
+  //     height: 400,
+  //     cropping: true,
+  //   }).then(image => {
+  //     console.log("camera photo", image);
+  //     setimage(image.path)
+
+  //   });
+
+
+  // }
   useEffect(() => {
     // if (categorya.categories) {
     // console.log("data",categorya.categories);
@@ -72,7 +110,8 @@ export default function Product() {
 
 
   const handleSubmit1 = async (data) => {
-
+    console.log("====================",data);
+    
     if (update) {
       dispatch(updeteProduct(data))
     } else {
@@ -104,6 +143,7 @@ export default function Product() {
     Discretion: string().required("enter your discretion"),
     Brand_id: string().required("selecte your Brand"),
     Color: string().required("selecte your color "),
+    // Image: string().required("selecte your Image "),
   });
 
   const formik = useFormik({
@@ -113,13 +153,15 @@ export default function Product() {
       Product_name: '',
       Price: '',
       Discretion: '',
-      Brand_id:'',
-      Color:'',
+      Brand_id: '',
+      Color: '',
+      // Image: '',
     },
     validationSchema: userSchema,
     onSubmit: (values, { resetForm }) => {
-      // console.log("values", values);
-      handleSubmit1(values);
+      console.log("values", values);
+      
+      handleSubmit1({values,url:image});
       resetForm();
 
     },
@@ -130,6 +172,9 @@ export default function Product() {
   // console.log("dataqqqqq", data);
 
   const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues, resetForm, setFieldValue } = formik;
+
+  console.log("errorserrors", errors);
+
   return (
     <ScrollView>
       <View style={styles.div}>
@@ -155,9 +200,11 @@ export default function Product() {
                   <Text style={{ color: '#9B9B9B' }}>Product:=<Text style={{ color: 'black' }}>{v.Product_name}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Price:=<Text style={{ color: 'black' }}>{v.Price}</Text></Text>
                   <Text style={{ color: '#9B9B9B' }}>Discretion:=<Text style={{ color: 'black' }}>{v.Discretion}</Text></Text>
+                  <Text style={{ color: '#9B9B9B' }}>Color:=<Text style={{ color: 'black' }}>{v.Color}</Text></Text>
+
                 </View>
                 {/* <View>
-               
+                
                 </View> */}
                 <View style={styles.iconview}>
 
@@ -199,7 +246,9 @@ export default function Product() {
 
                   <View style={styles.modalContent}>
                     <Text style={styles.modalText}>Product</Text>
-                    <View style={styles.DropDown}>
+
+
+                    <View style={[styles.DropDown, open ? { zIndex: 1000 } : { zIndex: 1 }]}>
                       <DropDownPicker
                         open={open}
                         value={formik.values.category_id}
@@ -217,11 +266,11 @@ export default function Product() {
                       <Text style={{ color: 'red' }}>{dropDownPicker && touched.category_id ? '' : errors.category_id}</Text>
 
                     </View>
-                    <View style={styles.DropDown1}>
+                    <View style={[styles.DropDown1, open1 ? { zIndex: 999 } : { zIndex: 1 }]}>
 
                       <DropDownPicker
                         open={open1}
-                        value={value}
+                        value={value1}
                         items={items1}
                         setOpen={setOpen1}
                         setValue={setValue1}
@@ -234,23 +283,57 @@ export default function Product() {
                       />
                       <Text style={{ color: 'red' }}>{SubdropDownPicker && touched.Subcategory_id ? errors.Subcategory_id : ''}</Text>
                     </View>
-                    <View style={styles.DropDown2}>
+                    <View style={[styles.DropDown2, openbrand ? { zIndex: 998 } : { zIndex: 1 }]}>
+
+                      <DropDownPicker
+                        open={openbrand}
+                        value={valuebrand}
+                        items={brands.brand.map(v => ({ label: v.name, value: v.id }))}
+                        setOpen={setOpenbrand}
+                        setValue={setValuebrand}
+                        setItems={setItemsbrand}
+                        placeholder={'Choose Brand'}
+                        // onChangeValue={() => handleChange('Brand_id')}
+                        onPress={() => setDropDownbrand(!dropDownbrand)}
+                        onSelectItem={(items) => setFieldValue('Brand_id', items.value)}
+                        listMode="SCROLLVIEW"
+                      />
+                      <Text style={{ color: 'red' }}>{dropDownbrand && touched.Brand_id ? errors.Brand_id : ''}</Text>
+                    </View>
+
+
+
+                    <View style={[styles.DropDown3, openco ? { zIndex: 997 } : { zIndex: 1 }]}>
 
                       <DropDownPicker
                         open={openco}
                         value={valueco}
-                        items={ brands.brand.map(v => ({label : v.name ,value :v.id}))}
+                        items={colord.Color.map(v => ({ label: v.name, value: v.id }))}
                         setOpen={setOpenco}
                         setValue={setValueco}
                         setItems={setItemsco}
-                        placeholder={'Choose Brand'}
+                        placeholder={'Choose color'}
                         // onChangeValue={() => handleChange('Brand_id')}
-                        onPress={() => setDropDownPicker(!SubdropDownPicker)}
-                        onSelectItem={(items) => setFieldValue('Brand_id', items.value)}
+                        onPress={() => setDropDownColor(!dropDownColor)}
+                        onSelectItem={(items) => setFieldValue('Color', items.value)}
                         listMode="SCROLLVIEW"
                       />
-                      <Text style={{ color: 'red' }}>{SubdropDownPicker && touched.Brand_id ? errors.Brand_id : ''}</Text>
+                      <Text style={{ color: 'red' }}>{dropDownColor && touched.Color ? errors.Color : ''}</Text>
                     </View>
+
+                    <TouchableOpacity style={styles.input} onPress={() => handleGallery()}>
+
+                      <Text style={{ color: 'black', bottom: 4 }}><MaterialCommunityIcons name="image-outline" size={24} color="#DB3022" />        Gallery Photo</Text>
+
+                    </TouchableOpacity>
+
+
+                    {/* <TouchableOpacity style={styles.input} onPress={() => handleCamera()}>
+
+                      <Text style={{ color: 'black', bottom: 4 }}> <MaterialCommunityIcons name="camera" size={24} color="#DB3022" />       Open Camera </Text>
+
+                    </TouchableOpacity> */}
+
                     <TextInput
                       style={styles.input}
                       placeholder='Product_name'
@@ -307,7 +390,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-
     height: verticalScale(30),
     borderColor: 'gray',
     borderWidth: 1,
@@ -378,22 +460,30 @@ const styles = StyleSheet.create({
   modalText: {
     color: 'black',
     fontSize: moderateScale(18),
-    marginBottom: moderateScale(20),
+    marginBottom: moderateScale(10),
   },
   DropDown: {
-    // paddingBottom: 30,
     paddingHorizontal: horizontalScale(5),
-    zIndex: 1000
+    // zIndex: 1000,
+
   },
   DropDown1: {
     paddingBottom: horizontalScale(10),
     paddingHorizontal: horizontalScale(5),
-    zIndex: 999
+    // zIndex: 999,
+
   },
   DropDown2: {
     paddingBottom: horizontalScale(10),
     paddingHorizontal: horizontalScale(5),
-    zIndex: 999
+    // zIndex: 1,
+
+  },
+  DropDown3: {
+    paddingBottom: horizontalScale(10),
+    paddingHorizontal: horizontalScale(5),
+    // zIndex: 1,
+
   },
   input: {
     color: 'black',

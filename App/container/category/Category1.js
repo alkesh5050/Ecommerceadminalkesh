@@ -17,14 +17,14 @@ export default function Category1() {
         },
         validationSchema: userSchema,
         onSubmit: values => {
-            console.log(values);
+            // console.log(values);
             setModalVisible(!modalVisible);
         },
     });
 
     const { handleChange, values, errors, handleSubmit } = formik;
 
-    console.log(errors);
+    // console.log(errors);
 
     return (
         <View style={styles.centeredView}>

@@ -129,7 +129,7 @@ export default function Category() {
 
           {
             data.map((v, i) => (
-              <View key={v.id} style={styles.Viewman}>
+              <View key={i} style={styles.Viewman}>
                 <Text style={{ color: 'black' }}>{v.name}</Text>
                 <View style={styles.iconview}>
 
