@@ -93,10 +93,9 @@ export const deleteProduct = (id) => async (dispatch) => {
 }
 
 export const updeteProduct = (data) => async (dispatch) => {
-    console.log("updete");
-
+    // console.log("updete",data);
       try {
-
+        // console.log("updetewwwwwwwwwwwwww",data.url);
           if (data.url === '') {
               await firestore()
                   .collection('Product')
@@ -132,8 +131,9 @@ export const updeteProduct = (data) => async (dispatch) => {
 
           } else {
               let check = data.url.split("/")[0];
+// console.log("cccccccccccc",check);
 
-              if (check === 'https') {
+              if (check === 'https:') {
                   await firestore()
                       .collection('Product')
                       .doc(data.id)

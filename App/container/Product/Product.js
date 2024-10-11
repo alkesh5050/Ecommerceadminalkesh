@@ -23,6 +23,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 const itemss = [('')];
 
 export default function Product() {
+
   const [modalVisible, setModalVisible] = useState(false);
   const [dropDownPicker, setDropDownPicker] = useState('');
   const [SubdropDownPicker, setSubDropDownPicker] = useState('');
@@ -130,7 +131,6 @@ export default function Product() {
       dispatch(addProduct(data));
     
     }
-   
     setModalVisible(false);
     setimage('')
   }
@@ -141,12 +141,16 @@ export default function Product() {
   }
 
   const Editdata = (data) => {
-    // console.log(data);
+    console.log("sssssssssss",data);
     setModalVisible(true)
     setValues(data)
     setimage(data.url)
     setUpdate(data.id)
     Subcategetdata(data.category_id);
+    setValue(data.category_id);
+    setValue1(data.Subcategory_id);
+    setValuebrand(data.Brand_id);
+    setValueco(data.Color)
   }
 
   let userSchema = object({
@@ -264,7 +268,7 @@ export default function Product() {
       <View style={styles.div}>
         <TouchableOpacity
           style={styles.Opacity}
-          onPress={() => (setModalVisible(true), setUpdate(null), resetForm())}
+          onPress={() => {setModalVisible(true); setUpdate(null);resetForm(); setimage('');setValue('');setValue1('');setValuebrand('');setValueco('')}}
         >
           <Text style={styles.Opacitytext}>Add Product</Text>
         </TouchableOpacity>
@@ -341,7 +345,7 @@ export default function Product() {
                     <View style={[styles.DropDown, open ? { zIndex: 1000 } : { zIndex: 1 }]}>
                       <DropDownPicker
                         open={open}
-                        value={formik.values.category_id}
+                        value={value}
                         items={items}
                         setOpen={setOpen}
                         setValue={setValue}
