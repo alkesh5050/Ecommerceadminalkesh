@@ -11,7 +11,8 @@ import FierCategory from '../category/FierCategory';
 import Brand from '../Brand/Brand';
 import Colorss from '../Color/Colorss';
 import Order from '../Order/Order';
-import Stacknavigat from './Stacknavigat';
+import Stacknavigat from './Order_Stack';
+import Order_Stack from './Order_Stack';
 
 
 
@@ -20,7 +21,7 @@ const Drawer = createDrawerNavigator();
 export default function () {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen name="Stacknavigat" component={Stacknavigat} />
+      <Drawer.Screen name="Order_Stack" component={Order_Stack} />
       <Drawer.Screen name="Product" component={Product} />
       <Drawer.Screen name="Category" component={Category} />
       <Drawer.Screen name="Category1" component={Category1} />

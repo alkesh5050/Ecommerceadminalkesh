@@ -39,6 +39,27 @@ export const getorderdata = createAsyncThunk(
   }
 )
 
+export const getproduct = createAsyncThunk(
+  'getproduct/fetch',
+  async () => {
+      // console.log("jjjjjjjjj", data);
+      const byproduct = [];
+      await firestore()
+          .collection('Product')
+          .get()
+          .then(querySnapshot => {
+
+              querySnapshot.forEach(documentSnapshot => {
+                  byproduct.push({...documentSnapshot.data(),id:documentSnapshot.id })
+
+              });
+
+          });
+      // console.log("byproduct", byproduct);
+      return byproduct
+
+  },
+)
 
 export const Orderslice = createSlice({
     name: 'order',
@@ -49,6 +70,10 @@ export const Orderslice = createSlice({
           // console.log("action.payload", action.payload);
           state.order = action.payload;
       })
+      builder.addCase(getproduct.fulfilled, (state, action) => {
+        // console.log("action.payload", action.payload);
+        state.order = action.payload;
+    })
 
     }
 })

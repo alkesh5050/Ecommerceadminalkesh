@@ -7,14 +7,13 @@ import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
-export default function Stacknavigat() {
+export default function Order_Stack() {
 
   return (
 
- 
     <Stack.Navigator> 
      
-        <Stack.Screen name="My_Oeders" component={Order} />
+        <Stack.Screen name="My Order" component={Order} />
         <Stack.Screen name="OrderDetails" component={Order_details} />
     </Stack.Navigator>
  
