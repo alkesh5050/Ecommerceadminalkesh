@@ -7,8 +7,11 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { useDispatch, useSelector } from 'react-redux';
 // import { addorder, getorderdata } from '../../Redux/slice/order.slice';
 import { horizontalScale, moderateScale, verticalScale } from '../../../assets/Fonts/Matrix/Matrix';
-import { getorderdata, getproduct } from '../../redux/Slice/Order.slice';
+import { addorder, getorderdata, updatestatus } from '../../redux/Slice/Order.slice';
 import { getcolordata } from '../../redux/Slice/Colorss.slice';
+import { object, string } from 'yup';
+import { useFormik } from 'formik';
+import { getProductata } from '../../redux/action/product.action';
 
 
 const data2 = [
@@ -57,6 +60,9 @@ const Orderdata = [
 ]
 export default function Order_details({ route, navigation }) {
 
+  console.log("hjk",route);
+  
+  const [dropDownPicker, setDropDownPicker] = useState('');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
@@ -72,24 +78,28 @@ export default function Order_details({ route, navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getproduct());
+    dispatch(getProductata());
     dispatch(getcolordata());
+    dispatch(getorderdata())
   }, [])
-  const order = useSelector(state => state.order);
+
+
+  const productdata = useSelector(state => state.products);
   const colord = useSelector(state => state.colord)
 
 
 
-  // console.log("aaaaaaaaaa", colord.Color);
+  // console.log("aaaaaaaaaa",productdata);
 
-  const carddata = order.order.filter((v) =>
-    route.params.cart.some((v1) => v1.pid === v.id)
-  )
-  const a = route.params.adresss
+  const carddata = productdata.produc.filter((v) =>
+    route?.params?.cart.some((v1) => v1.pid === v.id)
+  );
 
-  // console.log("carddata", a);
+  const a = route?.params?.adresss
 
-  const d = carddata.length
+  // console.log("carddata", carddata);
+
+  const d = carddata?.length
 
 
   const Order = ({ v }) => (
@@ -136,6 +146,34 @@ export default function Order_details({ route, navigation }) {
 
     </TouchableOpacity>
   );
+
+  const handleSubmit1 = (data) => {
+    // console.log("data", data);
+    if (route.params) {
+      dispatch(updatestatus({ newdata:  data, 
+         olddata: route.params  }))
+       
+    }
+  }
+
+  let userSchema = object({
+    DropDownPicker: string().required("selecte your DropDownPicker value"),
+
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      DropDownPicker: '',
+    },
+    validationSchema: userSchema,
+    onSubmit: (values, { resetForm }) => {
+      // console.log("values", values);
+      handleSubmit1(values);
+    },
+  });
+
+  const { handleBlur, handleChange, handleSubmit, errors, values, touched, setValues, resetForm, setFieldValue } = formik;
+
   return (
     <ScrollView style={styles.container}>
       <StatusBar
@@ -149,13 +187,13 @@ export default function Order_details({ route, navigation }) {
         keyExtractor={(item, index) => index.toString()}
         scrollEnabled={false}
       />
-   <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <View
           style={{
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            paddingHorizontal: 4,
+            // paddingHorizontal: 4,
           }}>
           <DropDownPicker
             open={open}
@@ -164,22 +202,24 @@ export default function Order_details({ route, navigation }) {
             setOpen={setOpen}
             setValue={setValue}
             setItems={setItems}
-            placeholder={'Choose a Order.'}
+            placeholder={'Choose a status.'}
+            onPress={() => setDropDownPicker(!dropDownPicker)}
+            onSelectItem={(item) => setFieldValue('DropDownPicker', item.value)}
           />
         </View>
-
+        {/* 
         <View style={{
           flex: 1,
           alignItems: 'center',
           justifyContent: 'center'
         }}>
           <Text>Chosen Order: {value === null ? 'none' : value}</Text>
-        </View>
+        </View> */}
       </View>
 
-      <View ><Text style={{ color: 'black', fontSize: 15 }}>{d} : item</Text></View>
+      <View ><Text style={{ color: 'black', fontSize: 15 }}>{d} : item</Text></View> 
 
-      <FlatList
+     <FlatList
         data={carddata}
         renderItem={({ item }) => <NewProductCard v={item} />}
         keyExtractor={(item, index) => index.toString()}
@@ -191,6 +231,12 @@ export default function Order_details({ route, navigation }) {
           <Text style={styles.orderData1}> {`${a.Full_name},${a.Adrress},${a.State},${a.City},${a.Country},${a.Zip_Code}`}
           </Text></Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.appButtonContainer}
+        onPress={handleSubmit}>
+        <Text style={styles.appButtonText}>submit</Text>
+      </TouchableOpacity>
+
 
     </ScrollView>
   )
@@ -204,6 +250,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(19),
     paddingTop: horizontalScale(13),
 
+  },
+  appButtonContainer: {
+
+    elevation: 8,
+    backgroundColor: "#009688",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12
+  },
+  appButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
   },
   orderData1: {
     fontFamily: 'Metropolis-Bold',
@@ -227,12 +288,13 @@ const styles = StyleSheet.create({
   },
   olldeta1: {
     flexDirection: 'row',
-    marginTop: horizontalScale(20),
+    marginTop: horizontalScale(10),
     backgroundColor: '#FFFFFF',
     borderRadius: horizontalScale(15),
     elevation: 3,
     padding: 25,
     // width:290
+    marginBottom: 17
   },
   pullovertext: {
     margin: '3%',

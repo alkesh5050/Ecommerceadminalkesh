@@ -48,8 +48,8 @@ const DataStructure = ({ v, n }) => (
     <View style={Styles.orderDatamainBody}>
       <View style={{ marginTop: 6 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={Styles.orderData1}>order_No :{v.ordernum}</Text>
-          <Text style={Styles.orderData2}>{v.date}</Text>
+          <Text style={Styles.orderData1}>order_No :{v?.ordernum}</Text>
+          <Text style={Styles.orderData2}>{v?.date}</Text>
         </View>
 
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -96,21 +96,24 @@ export default function Order({ route, navigation }) {
 
   const orderd = useSelector(state => state.order)
 
-  // useEffect(() => {
-  //   dispatch(getorderdata())
-  // }, [])
+  
+  
+  useEffect(() => {
+    dispatch(getorderdata())
+  }, [])
 
   useEffect(() => {
     const back = navigation.addListener('focus', () => {
       dispatch(getorderdata());
     });
-  
+   
     return back;
   }, [navigation]);
   
-  // console.log("dddddrrrr", orderd.order?.[0]?.order); 
+  // console.log("dddddrrrr", orderd.order); 
 
-  const datao = orderd.order?.[0]?.order
+  // const datao = orderd.order?.[0]?.order
+  const datao = orderd?.order?.flatMap((v)=> v?.order)
 
   return (
     <ScrollView>
