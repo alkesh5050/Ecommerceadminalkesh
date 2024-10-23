@@ -1,13 +1,13 @@
-import { DECREMENT, INCREMENT } from "../ActionTypes";
+import { DECREMENT, INCREMENT } from "../actiontypes";
 
 
 export const CounterReducer = (state , action) => {
 
-    console.log('action -=: ',action);
+    // console.log('action -=: ',action);
 
-    switch (action.payload) {
+    switch (action.type) {
         case INCREMENT :
-            return{
+            return{ 
                 count : action.payload
             }
         case DECREMENT :
