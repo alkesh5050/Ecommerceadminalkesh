@@ -95,7 +95,7 @@ export default function CategoryF() {
                     style={styles.Opacity}
                     onPress={() => setModalVisible(true)}
                 >
-                    <Text style={styles.Opacitytext}>Add Category</Text>
+                    <Text style={styles.Opacitytext}>Add Categoryxx</Text>
                 </TouchableOpacity>
             </View>
 

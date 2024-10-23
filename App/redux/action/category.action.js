@@ -1,22 +1,28 @@
+import axios from "axios";
 import { ADD_CATEGORY, DELETE_CATEGORY, GET_CATEGORY, UPDATE_CATEGORY } from "../ActionTypes";
 import firestore from '@react-native-firebase/firestore';
 
 export const getCategory = () => async (dispatch) => {
     try {
-        const allCat = [];
-        await firestore()
-            .collection('Category')
-            .get()
-            .then(querySnapshot => {
-                // console.log('Total users: ', querySnapshot.size);
+        // const allCat = [];
+        // await firestore()
+        //     .collection('Category')
+        //     .get()
+        //     .then(querySnapshot => {
+        //         // console.log('Total users: ', querySnapshot.size);
 
-                querySnapshot.forEach(documentSnapshot => {
-                    // console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
-                    allCat.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
-                });
-            });
+        //         querySnapshot.forEach(documentSnapshot => {
+        //             // console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
+        //             allCat.push({ id: documentSnapshot.id, ...documentSnapshot.data() });
+        //         });
+        //     });
 
-        dispatch({ type: GET_CATEGORY, payload: allCat })
+        const response = await axios.get("http://192.168.1.8:8000/api/v1/categories/list-categories", { headers: {"Authorization" : `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzEyNWI1ZDA1MjZkM2VlMjA3OTI5MDQiLCJyb2xlIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxIGhvdXJzIiwiaWF0IjoxNzI5MjU2MzYwLCJleHAiOjE3MjkyNTk5NjB9.oEoQOiKb7IIJs3QrJx8AIwtsTQcGP1_l01VnzfoLII0`} });
+
+        console.log("rrrrrrrrrrrrr",response.data.data);
+        
+
+        dispatch({ type: GET_CATEGORY, payload: response.data.data })
     } catch (error) {
         console.log(error);
     }

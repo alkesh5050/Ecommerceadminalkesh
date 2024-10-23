@@ -12,7 +12,7 @@ import { useFormik } from 'formik';
 import firestore from '@react-native-firebase/firestore';
 import Category from './Category';
 import { useDispatch, useSelector } from 'react-redux';
-import { addcategorydata, deletefiercategory, editfiercategory, getcategorydata } from '../../redux/action/fiercategory.action';
+import { addcategorydata, deletefiercategory, editfiercategory, getcategorydata, updatefierdata } from '../../redux/action/fiercategory.action';
 
 export default function FierCategory() {
     const [modalVisible, setModalVisible] = useState(false);
@@ -36,16 +36,15 @@ export default function FierCategory() {
     }
 
     const handleDeleteData = async (id) => {
-        // console.log("eeeeeeee", id);
+        console.log("eeeeeeee", id);
      
         dispatch(deletefiercategory(id))
        
     }
 
     const handleSubmit1 = async (data) => {
-
-    
-
+        // console.log("updateupdate",update);
+        
         if (update) {
             dispatch(handleupdate(data))
 
@@ -66,19 +65,21 @@ export default function FierCategory() {
         setModalVisible(true);
        
         setValues(data)
-        setUpdate(data.id)
+        setUpdate(data._id)
     }
     const handleupdate=(data)=>{
+        // console.log("vansh",data);
         dispatch(updatefierdata(data))
     }
 
     let userSchema = object({
         name: string().required(),
-
+        description: string().required(),
     });
     const formik = useFormik({
         initialValues: {
             name: '',
+            description:''
         },
         validationSchema: userSchema,
         onSubmit: (values, { resetForm }) => {
@@ -117,7 +118,7 @@ export default function FierCategory() {
                                         <FontAwesome name="pencil-square" size={25} color="green" />
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity onPress={() => handleDeleteData(v.id)}>
+                                    <TouchableOpacity onPress={() => handleDeleteData(v._id)}>
                                         <FontAwesome name="trash" size={25} color="red" />
                                     </TouchableOpacity>
 
@@ -150,7 +151,17 @@ export default function FierCategory() {
                                 />
                                 <Text style={{ color: 'red' }}>{errors.name && touched.name ? errors.name : ''}</Text>
                             </View>
-
+                            <View style={{ width: '95%', }}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='description'
+                                    placeholderTextColor='#9B9B9B'
+                                    onChangeText={handleChange('description')}
+                                    onBlur={handleBlur('description')}
+                                    value={values.description}
+                                />
+                                <Text style={{ color: 'red' }}>{errors.description && touched.description ? errors.description : ''}</Text>
+                            </View>
                             <TouchableOpacity
                                 style={styles.button1}
                                 onPress={handleSubmit}

@@ -21,13 +21,13 @@ const Drawer = createDrawerNavigator();
 export default function () {
   return (
     <Drawer.Navigator>
+      <Drawer.Screen name="FierCategory" component={FierCategory} />
       <Drawer.Screen name="Order_Stack" component={Order_Stack} />
       <Drawer.Screen name="Product" component={Product} />
       <Drawer.Screen name="Category" component={Category} />
       <Drawer.Screen name="Category1" component={Category1} />
       <Drawer.Screen name="cate" component={Cate} />
       <Drawer.Screen name="cateF" component={CategoryF} />
-      <Drawer.Screen name="FierCategory" component={FierCategory} />
       <Drawer.Screen name="SubCategory" component={SubCategory} />
       <Drawer.Screen name="Brand" component={Brand} />
       <Drawer.Screen name="color" component={Colorss} />

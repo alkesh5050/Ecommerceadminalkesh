@@ -24,14 +24,14 @@ export const FierCategoryReducer = (state = intialState, action) => {
         case DELETE_FIERCATEGORY:
             return {
                 isLoading: false,
-                categories: state.categories.filter((v) => v.id !== action.payload),
+                categories: state.categories.filter((v) => v._id !== action.payload),
                 error: null
             }
         case UPDATE_FIERCATEGORY:
             return {
                 isLoading: false,
                 categories: state.categories.map((v) => {
-                    if (v.id === action.payload.id) {
+                    if (v._id === action.payload._id) {
                         return action.payload
                     } else {
                         return v;
